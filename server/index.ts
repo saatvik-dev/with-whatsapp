@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { storage } from './storage';
 
 const app = express();
 app.use(express.json());
@@ -46,6 +47,14 @@ app.use((req, res, next) => {
     res.status(status).json({ message });
     throw err;
   });
+
+  // Initialize the database (creates tables if they don't exist)
+  try {
+    await storage.initializeDatabase();
+    log("Database initialized successfully");
+  } catch (error) {
+    console.error("Failed to initialize database:", error);
+  }
 
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
