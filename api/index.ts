@@ -1,5 +1,5 @@
 // Vercel serverless entry point
-import express from "express";
+import express, { Request, Response } from "express";
 import { storage } from "../server/storage";
 import { registerRoutes } from "../server/routes";
 
@@ -21,6 +21,18 @@ app.use(express.urlencoded({ extended: true }));
 
 // Register all routes
 registerRoutes(app);
+
+// Add a simple health check endpoint
+app.get("/api/health", (req: Request, res: Response) => {
+  res.status(200).json({ status: "ok", environment: "vercel" });
+});
+
+// Fallback route for serverless - helps catch issues
+app.all('*', (req: Request, res: Response) => {
+  res.status(200).json({
+    message: "M-Kite Kitchen API is running. Please use a specific endpoint."
+  });
+});
 
 // For Vercel serverless environment
 export default app;
