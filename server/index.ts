@@ -70,8 +70,8 @@ app.use((req, res, next) => {
   // It is the only port that is not firewalled.
   const port = 5000;
   
-  // Use "localhost" for Mac compatibility instead of "0.0.0.0"
-  server.listen(port, "localhost", () => {
+  // Use "0.0.0.0" to allow connections from any IP address
+  server.listen(port, "0.0.0.0", () => {
     log(`serving on port ${port}`);
   });
 })();
