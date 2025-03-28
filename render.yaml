@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: m-kite-kitchen
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: m-kite-kitchen-db
+          property: connectionString
+
+databases:
+  - name: m-kite-kitchen-db
+    databaseName: m_kite_kitchen
+    ipAllowList: []
