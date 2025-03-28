@@ -24,6 +24,7 @@ export interface IStorage {
   // Newsletter subscriptions
   subscribeToNewsletter(newsletterData: InsertNewsletter): Promise<Newsletter>;
   isEmailSubscribed(email: string): Promise<boolean>;
+  getAllNewsletterSubscriptions(): Promise<Newsletter[]>;
   
   // Database initialization
   initializeDatabase(): Promise<void>;
@@ -109,6 +110,10 @@ export class MemStorage implements IStorage {
     return Array.from(this.newsletters.values()).some(
       (newsletter) => newsletter.email === email
     );
+  }
+  
+  async getAllNewsletterSubscriptions(): Promise<Newsletter[]> {
+    return Array.from(this.newsletters.values());
   }
 }
 
@@ -243,6 +248,15 @@ export class PostgresStorage implements IStorage {
     } catch (error) {
       console.error("Error checking if email is subscribed:", error);
       return false;
+    }
+  }
+  
+  async getAllNewsletterSubscriptions(): Promise<Newsletter[]> {
+    try {
+      return await this.db.select().from(newsletters).orderBy(newsletters.createdAt);
+    } catch (error) {
+      console.error("Error getting all newsletter subscriptions:", error);
+      return [];
     }
   }
 }
