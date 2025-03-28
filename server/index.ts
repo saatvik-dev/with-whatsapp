@@ -65,9 +65,10 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // Use the PORT environment variable or default to 5000
-  // Render will provide PORT automatically
-  const port = process.env.PORT || 5000;
+  // ALWAYS serve the app on port 5000
+  // this serves both the API and the client.
+  // It is the only port that is not firewalled.
+  const port = 5000;
   
   // Use "0.0.0.0" to allow connections from any IP address
   server.listen(port, "0.0.0.0", () => {
