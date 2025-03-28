@@ -2,14 +2,10 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+  "rewrites": [
+    { "source": "/api/health", "destination": "/api/health" },
+    { "source": "/api/contact", "destination": "/api/contact" },
+    { "source": "/api/subscribe", "destination": "/api/subscribe" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
