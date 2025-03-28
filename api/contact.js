@@ -1,5 +1,5 @@
-// Contact form endpoint for Vercel serverless
-export default function handler(req, res) {
+// CommonJS format contact endpoint for Vercel
+module.exports = (req, res) => {
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ 
@@ -20,7 +20,6 @@ export default function handler(req, res) {
     }
     
     // In serverless context, we can just acknowledge the submission
-    // In production, this would connect to a database
     return res.status(200).json({
       success: true,
       message: 'Contact form submitted successfully',
@@ -28,8 +27,8 @@ export default function handler(req, res) {
         name,
         email,
         phone,
-        kitchenSize,
-        message,
+        kitchenSize: kitchenSize || null,
+        message: message || null,
         createdAt: new Date().toISOString()
       }
     });
@@ -40,4 +39,4 @@ export default function handler(req, res) {
       message: 'Internal server error'
     });
   }
-}
+};

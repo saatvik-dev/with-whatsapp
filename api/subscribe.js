@@ -1,5 +1,5 @@
-// Newsletter subscription endpoint for Vercel serverless
-export default function handler(req, res) {
+// CommonJS format newsletter subscription endpoint for Vercel
+module.exports = (req, res) => {
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ 
@@ -20,7 +20,6 @@ export default function handler(req, res) {
     }
     
     // In serverless context, we can just acknowledge the subscription
-    // In production, this would connect to a database
     return res.status(200).json({
       success: true,
       message: 'Subscribed to newsletter successfully',
@@ -36,4 +35,4 @@ export default function handler(req, res) {
       message: 'Internal server error'
     });
   }
-}
+};

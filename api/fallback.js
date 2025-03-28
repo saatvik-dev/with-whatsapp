@@ -1,8 +1,7 @@
-// Single API file for Vercel without imports
-// This is a catch-all handler for simplicity
+// CommonJS format API for Vercel - more compatible approach
+// Using module.exports instead of export default
 
-// IMPORTANT: Vercel requires this exact function name 'handler'
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   // CORS headers for browser clients
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -14,20 +13,21 @@ export default async function handler(req, res) {
   }
   
   // Get the specific path from the URL
-  const urlPath = req.url.split('/api/')[1] || '';
+  const pathSegments = req.url.split('/');
+  const endpoint = pathSegments[pathSegments.length - 1];
   
   // Handle different endpoints
   try {
-    if (req.method === 'GET' && urlPath === 'health') {
+    if (req.method === 'GET' && endpoint === 'health') {
       // Health check endpoint
       return res.status(200).json({
         status: 'ok',
         environment: 'vercel',
         timestamp: new Date().toISOString(),
-        message: 'M-Kite Kitchen API is running'
+        message: 'M-Kite Kitchen API is running (CommonJS version)'
       });
     } 
-    else if (req.method === 'POST' && urlPath === 'contact') {
+    else if (req.method === 'POST' && endpoint === 'contact') {
       // Contact form endpoint
       const { name, email, phone, kitchenSize, message } = req.body;
       
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
         }
       });
     } 
-    else if (req.method === 'POST' && urlPath === 'subscribe') {
+    else if (req.method === 'POST' && endpoint === 'subscribe') {
       // Newsletter subscription endpoint
       const { email } = req.body;
       
@@ -76,8 +76,8 @@ export default async function handler(req, res) {
     else {
       // Fallback for unknown endpoints
       return res.status(200).json({
-        message: 'M-Kite Kitchen API',
-        endpoint: urlPath || 'root',
+        message: 'M-Kite Kitchen API (CommonJS version)',
+        endpoint: endpoint || 'root',
         method: req.method,
         info: 'Use specific endpoints like /api/health, /api/contact, or /api/subscribe'
       });
@@ -90,4 +90,4 @@ export default async function handler(req, res) {
       error: error.message
     });
   }
-}
+};
