@@ -1,6 +1,18 @@
-# M-Kite Kitchen Website Deployment Guide
+# M-Kite Kitchen Website Deployment Guide (Updated)
 
-This guide contains detailed instructions for deploying the M-Kite Kitchen website to Render.com.
+This guide contains updated instructions for deploying the M-Kite Kitchen website to Render.com, addressing previous deployment issues.
+
+> **IMPORTANT UPDATE (March 29, 2025)**: Fixed the "Cannot find package 'vite'" error by explicitly installing Vite as a production dependency during the build process. If you were experiencing build failures on Render, please use the updated build commands in this guide.
+
+## What's Changed
+
+I've made several important updates to fix deployment issues on Render's free tier:
+
+1. **Created a dedicated production server** (`server/production.ts`) that doesn't depend on Vite in production
+2. **Updated build and run scripts** to correctly compile and run the application
+3. **Renamed hidden script files** from `.build.sh` to `build.sh` and `.run.sh` to `run.sh` for better compatibility
+4. **Modified render.yaml** with optimized build and start commands
+5. **Explicitly install Vite as a production dependency** during the build process to fix the "Cannot find package 'vite'" error
 
 ## Prerequisites
 
@@ -31,7 +43,7 @@ Render Blueprints make it easy to deploy applications with multiple services.
 1. In the Render dashboard, create a new PostgreSQL database:
    - Go to "New" > "PostgreSQL"
    - Name: mkite-kitchen-db
-   - Select the appropriate plan (starter or higher)
+   - Select the free plan (or an appropriate paid plan)
    - Click "Create Database"
 2. Once created, copy the "Internal Database URL" from the database dashboard.
 
@@ -41,9 +53,15 @@ Render Blueprints make it easy to deploy applications with multiple services.
    - Go to "New" > "Web Service"
    - Connect your GitHub repository
    - Name: mkite-kitchen
-   - Build Command: `bash .build.sh`
-   - Start Command: `bash .run.sh`
-   - Select the appropriate plan (starter or higher)
+   - Build Command: Use this exactly as shown:
+     ```
+     npm install && npm install vite --save-prod && npx vite build && mkdir -p server/public && cp -r client/dist/* server/public/ && npx esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/production.js
+     ```
+   - Start Command: Use this exactly as shown:
+     ```
+     NODE_ENV=production node dist/production.js
+     ```
+   - Select the free plan (or an appropriate paid plan)
 2. In the Environment section, add the following environment variable:
    - Key: `DATABASE_URL`
    - Value: Paste the internal database URL copied earlier
@@ -78,8 +96,29 @@ If you have existing data in your Replit PostgreSQL database that you want to mi
 
 ## Troubleshooting
 
+### Common Issues
+
 - **Database Connection Issues**: Verify that the `DATABASE_URL` environment variable is set correctly.
 - **Build Failures**: Check the build logs for errors and ensure all dependencies are correctly specified.
 - **Runtime Errors**: Check the logs from your web service for any runtime errors.
+
+### Specific Error Solutions
+
+#### "Cannot find package 'vite'" Error
+
+If you see this error in your build logs:
+```
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'vite' imported from ...
+```
+
+This is fixed in the latest build command by explicitly installing Vite as a production dependency. Make sure you're using the exact build command provided in this guide:
+
+```
+npm install && npm install vite --save-prod && npx vite build && mkdir -p server/public && cp -r client/dist/* server/public/ && npx esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/production.js
+```
+
+#### "Failed to load config from ..." Error
+
+If you see errors related to loading the Vite config, this is also addressed by our custom production server approach, which doesn't rely on Vite in production.
 
 For additional help, refer to the [Render documentation](https://render.com/docs) or contact the development team.
