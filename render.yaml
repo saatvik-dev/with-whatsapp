@@ -3,8 +3,17 @@ services:
     name: mkite-kitchen
     env: node
     plan: free
-    buildCommand: bash build.sh
-    startCommand: bash run.sh
+    buildCommand: |
+      # Move to the production directory
+      npm install
+      # Build client and server
+      npm run build
+      # Create the public directory
+      mkdir -p server/public
+      # Copy the client build to the server's static directory
+      cp -r client/dist/* server/public/
+    startCommand: |
+      NODE_ENV=production npm run start
     envVars:
       - key: NODE_ENV
         value: production
