@@ -2,7 +2,7 @@ services:
   - type: web
     name: mkite-kitchen
     env: node
-    plan: starter
+    plan: free
     buildCommand: bash .build.sh
     startCommand: bash .run.sh
     envVars:
@@ -15,4 +15,4 @@ services:
 
 databases:
   - name: mkite-kitchen-db
-    plan: starter
+    plan: free
