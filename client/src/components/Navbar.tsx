@@ -40,7 +40,7 @@ const Navbar = () => {
           </span>
           <h1 className="text-2xl font-['Montserrat'] font-bold tracking-tight">
             <span className="text-slate-800">M-Kite</span>
-            <span className="text-teal-600">Kitchen</span>
+            <span className="text-teal-600"> Kitchen</span>
           </h1>
         </a>
         
