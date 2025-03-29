@@ -119,58 +119,64 @@ export class MemStorage implements IStorage {
 
 // PostgreSQL storage implementation
 export class PostgresStorage implements IStorage {
-  private _db: any = null;
-  private dbPromise: Promise<any>;
+  private pool: Pool;
+  private db: any;
 
   constructor() {
-    // Use a promise to load the db module
-    this.dbPromise = this.initDb();
-  }
-
-  private async initDb() {
-    try {
-      const module = await import('./db');
-      this._db = module.db;
-      return module.db;
-    } catch (error) {
-      console.error("Error importing db module:", error);
-      throw error;
-    }
-  }
-
-  // Getter to ensure db is available
-  private async getDb() {
-    if (!this._db) {
-      this._db = await this.dbPromise;
-    }
-    return this._db;
+    // Use the environment variables provided by create_postgresql_database_tool
+    this.pool = new Pool({
+      connectionString: process.env.DATABASE_URL
+    });
+    this.db = drizzle(this.pool);
   }
 
   // Initialize database by creating tables
   async initializeDatabase(): Promise<void> {
     try {
-      // For Drizzle ORM, we can use the db directly
-      // The tables are defined in the schema already
-      // Just importing the schema is enough for Drizzle to know about the tables
+      // Check if tables exist, if not create them
+      const createUsersTable = `
+        CREATE TABLE IF NOT EXISTS users (
+          id SERIAL PRIMARY KEY,
+          username VARCHAR(255) NOT NULL,
+          password VARCHAR(255) NOT NULL
+        )
+      `;
 
-      // We can run a simple query to test the connection
-      const dbModule = await import('./db');
+      const createContactsTable = `
+        CREATE TABLE IF NOT EXISTS contact_submissions (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          email VARCHAR(255) NOT NULL,
+          phone VARCHAR(255) NOT NULL,
+          kitchen_size VARCHAR(255),
+          message TEXT,
+          created_at TIMESTAMP NOT NULL DEFAULT NOW()
+        )
+      `;
+
+      const createNewslettersTable = `
+        CREATE TABLE IF NOT EXISTS newsletters (
+          id SERIAL PRIMARY KEY,
+          email VARCHAR(255) NOT NULL UNIQUE,
+          created_at TIMESTAMP NOT NULL DEFAULT NOW()
+        )
+      `;
+
+      // Execute the create table statements
+      await this.pool.query(createUsersTable);
+      await this.pool.query(createContactsTable);
+      await this.pool.query(createNewslettersTable);
       
-      // Run simple query to check connection
-      await dbModule.pool.query('SELECT NOW()');
-      
-      console.log("Database connection tested successfully");
+      console.log("Database tables initialized successfully");
     } catch (error) {
-      console.error("Error initializing database connection:", error);
-      throw error;
+      console.error("Error initializing database tables:", error);
     }
   }
 
   // User methods
   async getUser(id: number): Promise<User | undefined> {
     try {
-      const db = await this.getDb();
-      const result = await db.select().from(users).where(eq(users.id, id));
+      const result = await this.db.select().from(users).where(eq(users.id, id));
       return result[0];
     } catch (error) {
       console.error("Error getting user:", error);
@@ -180,8 +186,7 @@ export class PostgresStorage implements IStorage {
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     try {
-      const db = await this.getDb();
-      const result = await db.select().from(users).where(eq(users.username, username));
+      const result = await this.db.select().from(users).where(eq(users.username, username));
       return result[0];
     } catch (error) {
       console.error("Error getting user by username:", error);
@@ -191,8 +196,7 @@ export class PostgresStorage implements IStorage {
 
   async createUser(userData: InsertUser): Promise<User> {
     try {
-      const db = await this.getDb();
-      const result = await db.insert(users).values(userData).returning();
+      const result = await this.db.insert(users).values(userData).returning();
       return result[0];
     } catch (error) {
       console.error("Error creating user:", error);
@@ -203,8 +207,7 @@ export class PostgresStorage implements IStorage {
   // Contact methods
   async createContactSubmission(contactData: InsertContact): Promise<Contact> {
     try {
-      const db = await this.getDb();
-      const result = await db.insert(contactSubmissions).values({
+      const result = await this.db.insert(contactSubmissions).values({
         ...contactData,
         createdAt: new Date()
       }).returning();
@@ -217,8 +220,7 @@ export class PostgresStorage implements IStorage {
 
   async getAllContactSubmissions(): Promise<Contact[]> {
     try {
-      const db = await this.getDb();
-      return await db.select().from(contactSubmissions).orderBy(contactSubmissions.createdAt);
+      return await this.db.select().from(contactSubmissions).orderBy(contactSubmissions.createdAt);
     } catch (error) {
       console.error("Error getting all contact submissions:", error);
       return [];
@@ -228,8 +230,7 @@ export class PostgresStorage implements IStorage {
   // Newsletter methods
   async subscribeToNewsletter(newsletterData: InsertNewsletter): Promise<Newsletter> {
     try {
-      const db = await this.getDb();
-      const result = await db.insert(newsletters).values({
+      const result = await this.db.insert(newsletters).values({
         ...newsletterData,
         createdAt: new Date()
       }).returning();
@@ -242,8 +243,7 @@ export class PostgresStorage implements IStorage {
 
   async isEmailSubscribed(email: string): Promise<boolean> {
     try {
-      const db = await this.getDb();
-      const result = await db.select().from(newsletters).where(eq(newsletters.email, email));
+      const result = await this.db.select().from(newsletters).where(eq(newsletters.email, email));
       return result.length > 0;
     } catch (error) {
       console.error("Error checking if email is subscribed:", error);
@@ -253,8 +253,7 @@ export class PostgresStorage implements IStorage {
   
   async getAllNewsletterSubscriptions(): Promise<Newsletter[]> {
     try {
-      const db = await this.getDb();
-      return await db.select().from(newsletters).orderBy(newsletters.createdAt);
+      return await this.db.select().from(newsletters).orderBy(newsletters.createdAt);
     } catch (error) {
       console.error("Error getting all newsletter subscriptions:", error);
       return [];

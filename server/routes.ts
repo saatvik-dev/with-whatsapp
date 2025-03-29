@@ -5,7 +5,7 @@ import { insertContactSchema, insertNewsletterSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 
-export async function registerRoutes(app: Express): Promise<Server | void> {
+export async function registerRoutes(app: Express): Promise<Server> {
   // put application routes here
   // prefix all routes with /api
 
@@ -128,12 +128,7 @@ export async function registerRoutes(app: Express): Promise<Server | void> {
     }
   });
 
-  // In a serverless environment like Vercel, we don't need to create a server
-  if (process.env.VERCEL) {
-    return;
-  } else {
-    // For local development or non-serverless environments
-    const httpServer = createServer(app);
-    return httpServer;
-  }
+  const httpServer = createServer(app);
+
+  return httpServer;
 }
