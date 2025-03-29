@@ -3,8 +3,8 @@ services:
     name: mkite-kitchen
     env: node
     plan: free
-    buildCommand: bash .build.sh
-    startCommand: bash .run.sh
+    buildCommand: bash build.sh
+    startCommand: bash run.sh
     envVars:
       - key: NODE_ENV
         value: production
