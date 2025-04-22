@@ -39,25 +39,11 @@ async function buildForNetlify() {
     // Build client (Vite is already configured to output to dist/public)
     await execPromise('npx vite build');
     
-    // Create Netlify function for API
-    const netlifyFunctionContent = `
-exports.handler = async (event, context) => {
-  // Redirect to external API
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: "This is a placeholder API response. In production, API requests should be directed to your backend service."
-    })
-  };
-};
-`;
-    
-    fs.writeFileSync('./netlify/functions/api.js', netlifyFunctionContent);
-    
     // Create a _redirects file to handle API proxying
     const redirectsContent = `
-# Proxy API requests to external backend (uncomment and update in production)
-# /api/*  https://your-backend-api.com/:splat  200
+# API routes to Netlify Functions
+/api/*  /.netlify/functions/api/:splat  200
+
 # All other routes go to index.html for SPA routing
 /*    /index.html   200
 `;

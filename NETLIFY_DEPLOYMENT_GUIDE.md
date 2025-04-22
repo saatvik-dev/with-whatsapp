@@ -1,46 +1,64 @@
-# Deploying M-Kite Kitchen to Netlify
+# M-Kite Kitchen Netlify Deployment Guide
 
-This guide provides step-by-step instructions for deploying the M-Kite Kitchen application on Netlify.
+This guide will help you deploy your M-Kite Kitchen application to Netlify. Both the frontend and backend will be hosted on Netlify.
 
-## Overview
+## Architecture Overview
 
-For the Netlify deployment, we'll:
-1. Deploy the frontend on Netlify
-2. Deploy the backend separately (options include Render, Heroku, or Firebase Functions)
-3. Configure the frontend to communicate with the backend
+- **Frontend**: React (Vite)
+- **Backend**: Netlify Functions
+- **Database**: PostgreSQL (external provider required)
 
 ## Prerequisites
 
-1. A [Netlify](https://www.netlify.com/) account
-2. Your project code pushed to a Git repository (GitHub, GitLab, or Bitbucket)
-3. A separate deployment for your backend API
+1. A Netlify account
+2. A PostgreSQL database (from providers like Neon, Supabase, or Render)
+3. Your code pushed to a Git repository (GitHub, GitLab, or Bitbucket)
 
-## Frontend Deployment to Netlify
+## Setting Up Your Database
 
-### Option 1: Deploy via Netlify UI (Recommended for beginners)
+Before deploying to Netlify, you need a PostgreSQL database:
 
-1. **Login to Netlify**:
-   - Go to [app.netlify.com](https://app.netlify.com/) and log in or sign up
+1. Sign up for a database service like [Neon](https://neon.tech/), [Supabase](https://supabase.com/), or [Render](https://render.com/)
+2. Create a new PostgreSQL database
+3. Get your connection string, which should look like:
+   ```
+   postgresql://username:password@hostname:port/database
+   ```
+4. Keep this connection string secure - you'll need it for Netlify environment variables
 
-2. **Create a New Site**:
-   - Click "Add new site" > "Import an existing project"
-   - Connect to your Git provider (GitHub, GitLab, or Bitbucket)
-   - Select your M-Kite Kitchen repository
+## Deploying to Netlify
 
-3. **Configure Build Settings**:
-   - Build command: `npm run build`
+### Option 1: Deploy via Netlify UI (Recommended)
+
+1. **Push your code to a Git repository**
+   - Make sure your repository is public or Netlify has access to it
+
+2. **Log in to Netlify**
+   - Go to [app.netlify.com](https://app.netlify.com/)
+   - Sign in with your account
+
+3. **Create a new site**
+   - Click "Add new site" and select "Import an existing project"
+   - Connect to your Git provider
+   - Select your repository
+
+4. **Configure build settings**
+   - Build command: `node netlify-build.js`
    - Publish directory: `dist/public`
-   - Click "Deploy site"
 
-4. **Set Environment Variables**:
-   - In your site's dashboard, go to Site settings > Build & deploy > Environment
+5. **Set environment variables**
+   - Click "Site settings" > "Environment variables"
    - Add the following variables:
-     - `VITE_API_BASE_URL`: URL of your backend API (e.g., https://your-backend-api.com)
-     - Any Firebase configuration variables if you're using Firebase services
+     - `DATABASE_URL`: Your PostgreSQL connection string
+     - Any other API keys or secrets your application needs
 
-5. **Trigger a New Deploy**:
-   - Go to the "Deploys" tab
-   - Click "Trigger deploy" > "Deploy site"
+6. **Deploy your site**
+   - Click "Deploy site"
+   - Wait for the build to complete
+
+7. **Check your deployment**
+   - Once deployed, Netlify will provide a URL to access your site
+   - Test both the frontend and API endpoints
 
 ### Option 2: Deploy via Netlify CLI
 
@@ -61,148 +79,60 @@ For the Netlify deployment, we'll:
    - Choose "Create & configure a new site"
    - Follow the prompts to select your team and set a site name
 
-4. **Deploy Your Site**:
+4. **Set Environment Variables**:
+   ```bash
+   netlify env:set DATABASE_URL your-database-connection-string
+   ```
+   - Add any other environment variables your application needs
+
+5. **Deploy Your Site**:
    ```bash
    netlify deploy --build
    ```
 
-5. **Set Environment Variables**:
-   ```bash
-   netlify env:set VITE_API_BASE_URL https://your-backend-api.com
-   ```
-
-## Backend Options
-
-### Option 1: Deploy Backend to Render
-
-Follow the instructions in the main `DEPLOYMENT.md` file to deploy your Express backend to Render.
-
-### Option 2: Deploy Backend to Firebase Functions
-
-Follow the instructions in the `FIREBASE_DEPLOYMENT_STEPS.md` file to deploy your Express backend as Firebase Functions.
-
-### Option 3: Use Netlify Functions (for simple backends)
-
-For simpler APIs, you can use Netlify Functions:
-
-1. **Create Netlify Functions**:
-   - Place your function files in the `netlify/functions` directory
-   - Each function exports a handler:
-     ```javascript
-     exports.handler = async (event, context) => {
-       return {
-         statusCode: 200,
-         body: JSON.stringify({ message: "Hello from Netlify Functions" })
-       };
-     };
-     ```
-
-2. **Access Your Functions**:
-   - Functions are available at `/.netlify/functions/[function-name]`
-   - For example: `https://your-site.netlify.app/.netlify/functions/api`
-
-## Connecting Frontend to Backend
-
-### Using Environment Variables
-
-1. **For local development**:
-   - Create a `.env.local` file with:
-     ```
-     VITE_API_BASE_URL=http://localhost:5000
-     ```
-
-2. **For production**:
-   - Set in Netlify dashboard:
-     ```
-     VITE_API_BASE_URL=https://your-backend-api.com
-     ```
-
-### Using Netlify Redirects (API Proxying)
-
-For better security and to avoid CORS issues, you can use Netlify redirects:
-
-1. **Create a `_redirects` file in the `dist/public` directory**:
-   ```
-   /api/*  https://your-backend-api.com/:splat  200
-   /*      /index.html                          200
-   ```
-   
-   This is created automatically by the netlify-build.js script.
-
-2. **Update your frontend code to use relative URLs**:
-   - Instead of `fetch('https://your-backend-api.com/api/data')`
-   - Use `fetch('/api/data')`
-
-## Custom Domain Configuration
-
-1. **Add Custom Domain**:
-   - In your site's dashboard, go to Site settings > Domain management
-   - Click "Add custom domain"
-   - Enter your domain name and follow the verification steps
-
-2. **Configure DNS**:
-   - Set up your DNS records as instructed by Netlify
-   - For apex domains, set an A record pointing to Netlify's load balancer
-   - For subdomains, set a CNAME record pointing to your Netlify site
-
-3. **Enable HTTPS**:
-   - Netlify automatically provisions SSL certificates via Let's Encrypt
-   - Ensure "HTTPS" is enabled in your site settings
-
-## Testing Your Deployment
-
-1. **Verify Frontend**:
-   - Visit your Netlify URL (e.g., https://your-site.netlify.app)
-   - Ensure all pages load correctly
-   - Check for any console errors
-
-2. **Verify API Connection**:
-   - Test API endpoints through the frontend
-   - Check Network tab in browser DevTools for successful API requests
-
 ## Troubleshooting
 
-### Build Failures
+### Database Connection Issues
 
-1. **Check Build Logs**:
-   - Examine the detailed build logs in Netlify dashboard
-   - Look for specific error messages
+If your API functions can't connect to the database:
 
-2. **Local Build Test**:
-   - Run `npm run build` locally to verify build success
-   - Fix any errors that occur
+1. Verify the `DATABASE_URL` environment variable is set correctly in Netlify
+2. Ensure your database provider allows connections from Netlify's IP addresses
+3. Check if your database requires SSL connections
+4. Look at Netlify Function logs in the Netlify dashboard
 
-### API Connection Issues
+### API Not Working
 
-1. **CORS Errors**:
-   - Ensure your backend has proper CORS headers
-   - Add your Netlify domain to allowed origins in your backend
+If your API endpoints return 404 errors:
 
-2. **Redirect Issues**:
-   - Check your `_redirects` file syntax
-   - Verify that the redirects are being applied (in Netlify's deploy logs)
+1. Ensure the path matches what your frontend is expecting
+2. Check Netlify redirects are configured correctly
+3. Verify Netlify Functions are deployed correctly
 
-### Environment Variables
+### Frontend Not Finding API
 
-1. **Missing Variables**:
-   - Verify all required environment variables are set in Netlify dashboard
-   - Check that your code correctly references these variables using `import.meta.env.VITE_*`
+If your frontend can't connect to your API:
 
-## Continuous Deployment
+1. Make sure API calls are directed to `/api/*` and not directly to Netlify Functions
+2. Verify that your frontend is using relative URLs for API calls
+3. Check browser console for CORS errors
 
-Netlify automatically deploys when you push to your connected repository. To control this:
+## Maintenance and Updates
 
-1. **Branch Deploys**:
-   - Configure specific branches for deployment
-   - Setup preview deployments for feature branches
+### Updating Your Site
 
-2. **Build Hooks**:
-   - Create build hooks for triggering deploys via webhook
-   - Useful for integrating with external services
+To update your site after making changes:
 
-## Need Help?
+1. Push changes to your Git repository
+2. Netlify will automatically rebuild and deploy (if you set up continuous deployment)
 
-If you encounter issues with your Netlify deployment:
-- Check [Netlify's Documentation](https://docs.netlify.com/)
-- Visit [Netlify's Support Forums](https://answers.netlify.com/)
-- Contact Netlify Support from your dashboard
+### Monitoring
+
+1. Use Netlify's built-in analytics to monitor site performance
+2. Check function logs in the Netlify dashboard under "Functions"
+
+## Additional Resources
+
+- [Netlify Functions Documentation](https://docs.netlify.com/functions/overview/)
+- [Netlify Environment Variables](https://docs.netlify.com/configure-builds/environment-variables/)
+- [Netlify Redirects](https://docs.netlify.com/routing/redirects/)
