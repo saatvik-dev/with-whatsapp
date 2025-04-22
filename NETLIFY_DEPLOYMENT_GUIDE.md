@@ -1,16 +1,16 @@
 # M-Kite Kitchen Netlify Deployment Guide
 
-This guide will help you deploy your M-Kite Kitchen application to Netlify. Both the frontend and backend will be hosted on Netlify.
+This guide will help you deploy your M-Kite Kitchen application to Netlify. Both the frontend and backend will be hosted on Netlify using the serverless functions approach.
 
 ## Architecture Overview
 
-- **Frontend**: React (Vite)
-- **Backend**: Netlify Functions
+- **Frontend**: React (Vite) - hosted on Netlify
+- **Backend API**: Netlify Functions - serverless functions hosted on Netlify
 - **Database**: PostgreSQL (external provider required)
 
 ## Prerequisites
 
-1. A Netlify account
+1. A Netlify account (sign up at [netlify.com](https://netlify.com))
 2. A PostgreSQL database (from providers like Neon, Supabase, or Render)
 3. Your code pushed to a Git repository (GitHub, GitLab, or Bitbucket)
 
@@ -18,13 +18,14 @@ This guide will help you deploy your M-Kite Kitchen application to Netlify. Both
 
 Before deploying to Netlify, you need a PostgreSQL database:
 
-1. Sign up for a database service like [Neon](https://neon.tech/), [Supabase](https://supabase.com/), or [Render](https://render.com/)
+1. Sign up for a database service like [Neon](https://neon.tech/) (recommended), [Supabase](https://supabase.com/), or [Render](https://render.com/)
 2. Create a new PostgreSQL database
 3. Get your connection string, which should look like:
    ```
    postgresql://username:password@hostname:port/database
    ```
-4. Keep this connection string secure - you'll need it for Netlify environment variables
+4. Make sure your database provider allows connections from Netlify's IP addresses
+5. Keep this connection string secure - you'll need it for Netlify environment variables
 
 ## Deploying to Netlify
 

@@ -61,15 +61,17 @@ npm run db:push
 - `GET /api/admin/contacts` - Get all contact form submissions
 - `GET /api/admin/newsletters` - Get all newsletter subscriptions
 
-## Deployment Options
+## Deployment 
 
-This project includes configuration for deploying to:
+This project is configured for deployment on Netlify:
 
-1. **Render**: Full-stack deployment with PostgreSQL database
-   - See [DEPLOYMENT.md](DEPLOYMENT.md) for instructions
+- **Netlify**: Full-stack deployment using Netlify Functions for the backend API
+  - See [NETLIFY_DEPLOYMENT_GUIDE.md](NETLIFY_DEPLOYMENT_GUIDE.md) for detailed instructions
 
-2. **Netlify**: Frontend-only deployment with separate backend
-   - See [NETLIFY_DEPLOYMENT.md](NETLIFY_DEPLOYMENT.md) for instructions
+The deployment includes:
+- Static hosting for the React frontend
+- Serverless Functions for the backend API
+- Configuration for connecting to an external PostgreSQL database
 
 ## Data Migration
 
