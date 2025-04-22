@@ -1,6 +1,6 @@
-const { exec } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+import { exec } from 'child_process';
+import fs from 'fs';
+import path from 'path';
 
 // Ensure directories exist
 const ensureDir = (dirPath) => {
@@ -35,11 +35,8 @@ async function buildAndDeploy() {
     ensureDir('dist');
     ensureDir('dist/public');
 
-    // Build client
+    // Build client (Vite is already configured to output to dist/public)
     await execPromise('npx vite build');
-    
-    // Copy client build to dist/public
-    await execPromise('cp -r client/dist/* dist/public/');
     
     // Build server for Firebase Functions
     await execPromise('npx esbuild server/firebase-production.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js');

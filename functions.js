@@ -1,8 +1,8 @@
-const { onRequest } = require('firebase-functions/v2/https');
-const { app } = require('./dist/index.js');
+import { onRequest } from 'firebase-functions/v2/https';
+import { app } from './dist/index.js';
 
 // Create a Firebase Function that will serve our Express app
-exports.api = onRequest(
+export const api = onRequest(
   { 
     cors: true,
     // You can adjust memory, timeout, etc. as needed
