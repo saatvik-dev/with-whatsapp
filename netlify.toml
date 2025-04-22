@@ -1,13 +1,22 @@
 [build]
-  command = "npm run build"
+  command = "node netlify-build.js"
   publish = "dist/public"
   functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "20"
 
-# Redirect all routes to index.html for SPA routing
+# API routes to Netlify Functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+# All other routes to index.html for SPA routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+[functions]
+  node_bundler = "esbuild"
