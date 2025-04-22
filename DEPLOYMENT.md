@@ -1,124 +1,130 @@
-# M-Kite Kitchen Website Deployment Guide (Updated)
+# M-Kite Kitchen: Netlify Deployment Guide
 
-This guide contains updated instructions for deploying the M-Kite Kitchen website to Render.com, addressing previous deployment issues.
-
-> **IMPORTANT UPDATE (March 29, 2025)**: Fixed the "Cannot find package 'vite'" error by explicitly installing Vite as a production dependency during the build process. If you were experiencing build failures on Render, please use the updated build commands in this guide.
-
-## What's Changed
-
-I've made several important updates to fix deployment issues on Render's free tier:
-
-1. **Created a dedicated production server** (`server/production.ts`) that doesn't depend on Vite in production
-2. **Updated build and run scripts** to correctly compile and run the application
-3. **Renamed hidden script files** from `.build.sh` to `build.sh` and `.run.sh` to `run.sh` for better compatibility
-4. **Modified render.yaml** with optimized build and start commands
-5. **Explicitly install Vite as a production dependency** during the build process to fix the "Cannot find package 'vite'" error
+This guide will walk you through deploying both the frontend and backend of your M-Kite Kitchen application on Netlify, using Netlify Functions for the backend API.
 
 ## Prerequisites
 
-- A [Render.com](https://render.com) account
-- Git repository with your project code
-- PostgreSQL database details from Replit (if migrating data)
+1. A GitHub, GitLab, or Bitbucket account to host your repository
+2. A Netlify account (sign up at [netlify.com](https://netlify.com))
+3. A PostgreSQL database (from services like [Neon](https://neon.tech), [Supabase](https://supabase.com), or [Render](https://render.com))
 
-## Option 1: Deploy using Render Blueprint (Recommended)
+## Setup Overview
 
-Render Blueprints make it easy to deploy applications with multiple services.
+Your application is already configured for Netlify deployment with:
 
-1. Fork or clone this repository to your own GitHub account.
-2. Log in to your Render account.
-3. Navigate to the Blueprints section in the Render dashboard.
-4. Click "New Blueprint Instance".
-5. Connect your GitHub account if you haven't already.
-6. Select the repository containing the M-Kite Kitchen website.
-7. Review the services that will be created (defined in `render.yaml`):
-   - Web service: The website application
-   - PostgreSQL database: For storing contact form submissions and newsletter subscribers
-8. Click "Apply" to start the deployment process.
-9. Once the deployment is complete, Render will provide you with a URL for your application.
+- Frontend: React/Vite in the `client` directory
+- Backend API: Netlify Functions in the `netlify/functions` directory
+- Database: PostgreSQL (requires external hosting)
 
-## Option 2: Manual Deployment
+## Step 1: Set Up Your PostgreSQL Database
 
-### Database Setup
-
-1. In the Render dashboard, create a new PostgreSQL database:
-   - Go to "New" > "PostgreSQL"
-   - Name: mkite-kitchen-db
-   - Select the free plan (or an appropriate paid plan)
-   - Click "Create Database"
-2. Once created, copy the "Internal Database URL" from the database dashboard.
-
-### Web Service Setup
-
-1. In the Render dashboard, create a new Web Service:
-   - Go to "New" > "Web Service"
-   - Connect your GitHub repository
-   - Name: mkite-kitchen
-   - Build Command: Use this exactly as shown:
-     ```
-     npm install && npm install vite --save-prod && npx vite build && mkdir -p server/public && cp -r client/dist/* server/public/ && npx esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/production.js
-     ```
-   - Start Command: Use this exactly as shown:
-     ```
-     NODE_ENV=production node dist/production.js
-     ```
-   - Select the free plan (or an appropriate paid plan)
-2. In the Environment section, add the following environment variable:
-   - Key: `DATABASE_URL`
-   - Value: Paste the internal database URL copied earlier
-3. Click "Create Web Service" to start the deployment.
-
-## Data Migration (Optional)
-
-If you have existing data in your Replit PostgreSQL database that you want to migrate to Render:
-
-1. Export the data from your Replit database:
+1. Sign up for a PostgreSQL database service like Neon, Supabase, or Render
+2. Create a new PostgreSQL database
+3. Get your connection string, which will look like:
    ```
-   cd /path/to/your/project
-   node scripts/export-database.js
+   postgresql://username:password@hostname:port/database
    ```
-   This will create JSON files with your data in the `database-export` directory.
+4. Keep this connection string secure - you'll need it for Netlify environment variables
 
-2. After deploying to Render, import the data:
-   - Download the exported JSON files from Replit
-   - Upload them to your Render instance (or transfer them to a GitHub repository)
-   - Run the import script:
-     ```
-     node scripts/import-database.js
-     ```
+## Step 2: Prepare Your Repository
 
-## Post-Deployment Steps
+1. Make sure your code is in a Git repository
+2. Push your repository to GitHub, GitLab, or Bitbucket
+3. Ensure all changes are committed and pushed
 
-1. Verify that your application is running by visiting the provided URL.
-2. Check that all features are working correctly:
-   - Contact form submissions
-   - Newsletter subscriptions
-   - Admin access to view submissions and subscribers
+## Step 3: Deploy to Netlify
+
+### Deployment Option 1: Netlify Dashboard (Recommended)
+
+1. Log in to [Netlify](https://app.netlify.com/)
+2. Click "Add new site" > "Import an existing project"
+3. Connect to your Git provider (GitHub, GitLab, or Bitbucket)
+4. Select your repository
+
+5. Configure build settings:
+   - Build command: `node netlify-build.js`
+   - Publish directory: `dist/public`
+
+6. Environment variables - Click "Advanced" and add:
+   - `DATABASE_URL`: Your PostgreSQL connection string
+
+7. Click "Deploy site"
+
+### Deployment Option 2: Netlify CLI
+
+If you prefer using the command line:
+
+1. Install Netlify CLI:
+   ```bash
+   npm install netlify-cli -g
+   ```
+
+2. Log in to Netlify:
+   ```bash
+   netlify login
+   ```
+
+3. Initialize your site:
+   ```bash
+   netlify init
+   ```
+   - Select "Create & configure a new site"
+
+4. Set environment variables:
+   ```bash
+   netlify env:set DATABASE_URL your-database-connection-string
+   ```
+
+5. Deploy your site:
+   ```bash
+   netlify deploy --build
+   ```
+
+## Step 4: Test Your Deployment
+
+After deployment is complete:
+
+1. Visit your Netlify site URL (e.g., `https://your-site-name.netlify.app`)
+2. Test the contact form submission
+3. Test the newsletter subscription
+
+If everything works correctly, your frontend and backend are successfully deployed on Netlify!
 
 ## Troubleshooting
 
-### Common Issues
+### Database Connection Issues
 
-- **Database Connection Issues**: Verify that the `DATABASE_URL` environment variable is set correctly.
-- **Build Failures**: Check the build logs for errors and ensure all dependencies are correctly specified.
-- **Runtime Errors**: Check the logs from your web service for any runtime errors.
+If your Netlify Functions can't connect to the database:
 
-### Specific Error Solutions
+1. Check that your `DATABASE_URL` environment variable is set correctly
+2. Ensure your database allows connections from Netlify's IP addresses
+3. Check your database provider's security settings (some require whitelisting IPs)
+4. Enable SSL if your database provider requires it, by setting `ssl: { rejectUnauthorized: false }` in the Netlify function
 
-#### "Cannot find package 'vite'" Error
+### API Endpoint Issues
 
-If you see this error in your build logs:
-```
-Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'vite' imported from ...
-```
+If your API endpoints return 404 errors:
 
-This is fixed in the latest build command by explicitly installing Vite as a production dependency. Make sure you're using the exact build command provided in this guide:
+1. Check the Netlify Functions logs in your Netlify dashboard
+2. Verify the API paths match what your frontend is expecting (`/api/contact`, `/api/subscribe`, etc.)
+3. Ensure the `netlify.toml` file has the correct redirects configuration
 
-```
-npm install && npm install vite --save-prod && npx vite build && mkdir -p server/public && cp -r client/dist/* server/public/ && npx esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/production.js
-```
+## Monitoring and Maintenance
 
-#### "Failed to load config from ..." Error
+### Logs and Debugging
 
-If you see errors related to loading the Vite config, this is also addressed by our custom production server approach, which doesn't rely on Vite in production.
+1. Access function logs in the Netlify dashboard:
+   - Go to your site > Functions > Select the function > View logs
 
-For additional help, refer to the [Render documentation](https://render.com/docs) or contact the development team.
+### Updating Your Site
+
+To update your site after making changes:
+
+1. Commit and push changes to your repository
+2. Netlify will automatically rebuild and deploy your site
+
+## Additional Resources
+
+- [Netlify Functions Documentation](https://docs.netlify.com/functions/overview/)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [Drizzle ORM Documentation](https://orm.drizzle.team/docs/overview)
