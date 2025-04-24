@@ -14,16 +14,11 @@ const ProtectedRoute = ({ path, component: Component }: ProtectedRouteProps) => 
   useEffect(() => {
     // Check if user is authenticated
     const authStatus = localStorage.getItem("adminAuthenticated");
-    console.log("Auth check - authStatus:", authStatus);
-    
     setIsAuthenticated(authStatus === "true");
 
     // Redirect to login if not authenticated
     if (authStatus !== "true") {
-      console.log("Not authenticated, redirecting to login");
       setLocation("/admin-login");
-    } else {
-      console.log("User is authenticated, showing admin page");
     }
   }, [setLocation]);
 

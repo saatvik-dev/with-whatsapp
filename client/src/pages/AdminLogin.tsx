@@ -48,47 +48,22 @@ const AdminLogin = () => {
   const onSubmit = async (data: LoginValues) => {
     setIsLoading(true);
     
-    // Log the credentials for debugging
-    console.log("Login attempt:", {
-      entered: { username: data.username, password: data.password },
-      expected: { username: ADMIN_USERNAME, password: ADMIN_PASSWORD }
-    });
-    
-    // Try a simpler approach for authentication
-    try {
-      // Simple authentication check - using exact string comparison
-      const usernameMatches = data.username.trim() === ADMIN_USERNAME.trim();
-      const passwordMatches = data.password.trim() === ADMIN_PASSWORD.trim();
+    // Simple authentication check
+    if (data.username === ADMIN_USERNAME && data.password === ADMIN_PASSWORD) {
+      // Store authentication state in localStorage
+      localStorage.setItem("adminAuthenticated", "true");
       
-      console.log("Login check:", { usernameMatches, passwordMatches });
-      
-      if (usernameMatches && passwordMatches) {
-        // Store authentication state in localStorage
-        window.localStorage.setItem("adminAuthenticated", "true");
-        console.log("Authentication successful, localStorage set");
-        
-        toast({
-          title: "Login successful",
-          description: "Welcome to the admin dashboard",
-        });
-        
-        // Short timeout to ensure localStorage is set
-        setTimeout(() => {
-          // Redirect to admin dashboard
-          setLocation("/admin");
-        }, 100);
-      } else {
-        toast({
-          title: "Login failed",
-          description: "Invalid username or password. Please try admin/M-Kite2025",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error("Login error:", error);
       toast({
-        title: "Login error",
-        description: "An error occurred during login. Please try again.",
+        title: "Login successful",
+        description: "Welcome to the admin dashboard",
+      });
+      
+      // Redirect to admin dashboard
+      setLocation("/admin");
+    } else {
+      toast({
+        title: "Login failed",
+        description: "Invalid username or password",
         variant: "destructive",
       });
     }
@@ -113,9 +88,6 @@ const AdminLogin = () => {
           <CardDescription className="text-center">
             Enter your credentials to access the admin dashboard
           </CardDescription>
-          <div className="mt-2 text-teal-600 font-medium text-center">
-            Username: admin / Password: M-Kite2025
-          </div>
         </CardHeader>
         <CardContent>
           <Form {...form}>
