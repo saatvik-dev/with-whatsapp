@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { quickLinks, socialLinks, footerLinks } from '@/constants/data';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { Link } from 'wouter';
 
 const getSocialIcon = (iconName: string) => {
   switch (iconName) {
