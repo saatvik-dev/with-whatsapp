@@ -231,6 +231,7 @@ export const kitchenSizes = [
 
 export const navLinks = [
   { href: "#features", label: "Features" },
+  { href: "#video", label: "Video" },
   { href: "#benefits", label: "Benefits" },
   { href: "#gallery", label: "Gallery" },
   { href: "#comparison", label: "Compare" },
@@ -239,6 +240,7 @@ export const navLinks = [
 
 export const quickLinks = [
   { href: "#features", label: "Features" },
+  { href: "#video", label: "Video" },
   { href: "#benefits", label: "Benefits" },
   { href: "#gallery", label: "Gallery" },
   { href: "#comparison", label: "Comparison" },

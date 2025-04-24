@@ -8,6 +8,7 @@ import Testimonials from '@/components/Testimonials';
 import Warranty from '@/components/Warranty';
 import Contact from '@/components/Contact';
 import About from '@/components/About';
+import VideoSection from '@/components/VideoSection';
 import Footer from '@/components/Footer';
 import { useEffect } from 'react';
 
@@ -23,6 +24,7 @@ const Home = () => {
       <main>
         <Hero />
         <Features />
+        <VideoSection videoId="ZZrv5OXqIIE" />
         <Benefits />
         <Gallery />
         <Comparison />
