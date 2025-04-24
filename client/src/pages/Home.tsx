@@ -24,7 +24,7 @@ const Home = () => {
       <main>
         <Hero />
         <Features />
-        <VideoSection videoId="ZZrv5OXqIIE" />
+        <VideoSection videoId="omYJi9wWdyo" />
         <Benefits />
         <Gallery />
         <Comparison />
