@@ -162,7 +162,7 @@ const Footer = () => {
             </form>
             
             <p className="text-slate-400 text-sm">
-              By subscribing, you agree to our Privacy Policy and consent to receive updates from our company.
+              By subscribing, you agree to our <Link href="/privacy-policy"><span className="text-teal-400 hover:underline cursor-pointer">Privacy Policy</span></Link> and consent to receive updates from our company.
             </p>
           </div>
         </div>
@@ -175,9 +175,17 @@ const Footer = () => {
             
             <div className="flex space-x-6">
               {footerLinks.map((link, index) => (
-                <a key={index} href={link.href} className="text-slate-400 hover:text-teal-400 text-sm transition-colors">
-                  {link.label}
-                </a>
+                link.href.startsWith('/') ? (
+                  <Link key={index} href={link.href}>
+                    <span className="text-slate-400 hover:text-teal-400 text-sm transition-colors cursor-pointer">
+                      {link.label}
+                    </span>
+                  </Link>
+                ) : (
+                  <a key={index} href={link.href} className="text-slate-400 hover:text-teal-400 text-sm transition-colors">
+                    {link.label}
+                  </a>
+                )
               ))}
             </div>
           </div>

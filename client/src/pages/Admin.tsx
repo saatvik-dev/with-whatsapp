@@ -28,20 +28,24 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState("contacts");
 
   const { 
-    data: contacts, 
+    data: contactsResponse, 
     isLoading: contactsLoading, 
     error: contactsError 
-  } = useQuery<Contact[]>({
+  } = useQuery<{success: boolean, data: Contact[]}>({
     queryKey: ['/api/admin/contacts'],
   });
 
   const { 
-    data: newsletters, 
+    data: newslettersResponse, 
     isLoading: newslettersLoading, 
     error: newslettersError 
-  } = useQuery<Newsletter[]>({
+  } = useQuery<{success: boolean, data: Newsletter[]}>({
     queryKey: ['/api/admin/newsletters'],
   });
+  
+  // Extract the actual data arrays from the response
+  const contacts = contactsResponse?.data;
+  const newsletters = newslettersResponse?.data;
 
   const formatDate = (dateString: string) => {
     try {
