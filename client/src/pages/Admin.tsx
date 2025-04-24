@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import { Link } from "wouter";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { IconArrowRight, IconMapPin, IconPhone, IconMail } from "@/lib/icons";
+import { LogOut } from "lucide-react";
 import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
 
 interface Contact {
   id: number;
@@ -26,6 +28,8 @@ interface Newsletter {
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState("contacts");
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   const { 
     data: contactsResponse, 
@@ -47,6 +51,16 @@ const Admin = () => {
   const contacts = contactsResponse?.data;
   const newsletters = newslettersResponse?.data;
 
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem("adminAuthenticated");
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out",
+    });
+    setLocation("/admin-login");
+  };
+
   const formatDate = (dateString: string) => {
     try {
       return format(new Date(dateString), 'PPP p');
@@ -60,11 +74,20 @@ const Admin = () => {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold">Admin Dashboard</h1>
-          <Link href="/">
-            <Button variant="outline" className="flex items-center gap-2">
-              <IconArrowRight className="rotate-180" /> Back to Website
+          <div className="flex gap-2">
+            <Button 
+              variant="destructive" 
+              className="flex items-center gap-2"
+              onClick={handleLogout}
+            >
+              <LogOut size={18} /> Logout
             </Button>
-          </Link>
+            <Link href="/">
+              <Button variant="outline" className="flex items-center gap-2">
+                <IconArrowRight className="rotate-180" /> Back to Website
+              </Button>
+            </Link>
+          </div>
         </div>
 
         <Tabs defaultValue="contacts" onValueChange={setActiveTab}>

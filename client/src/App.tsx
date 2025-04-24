@@ -6,13 +6,16 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import Admin from "@/pages/Admin";
+import AdminLogin from "@/pages/AdminLogin";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
-      <Route path="/admin" component={Admin} />
+      <Route path="/admin-login" component={AdminLogin} />
+      <ProtectedRoute path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>
   );

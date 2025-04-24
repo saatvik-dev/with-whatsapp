@@ -256,6 +256,5 @@ export const socialLinks = [
 export const footerLinks = [
   { href: "/privacy-policy", label: "Privacy Policy" },
   { href: "#", label: "Terms of Service" },
-  { href: "#", label: "Sitemap" },
-  { href: "/admin", label: "Admin" }
+  { href: "#", label: "Sitemap" }
 ];
