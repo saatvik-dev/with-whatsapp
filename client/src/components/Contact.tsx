@@ -6,7 +6,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { contactInfo, kitchenSizes, socialLinks } from '@/constants/data';
 import { useToast } from '@/hooks/use-toast';
@@ -45,10 +44,7 @@ const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
   phone: z.string().min(10, { message: 'Please enter a valid phone number' }),
   kitchenSize: z.string().optional(),
-  message: z.string().optional(),
-  agreeToTerms: z.boolean().refine(value => value === true, {
-    message: 'You must agree to receive communications'
-  })
+  message: z.string().optional()
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -64,8 +60,7 @@ const Contact = () => {
       email: '',
       phone: '',
       kitchenSize: '',
-      message: '',
-      agreeToTerms: false
+      message: ''
     }
   });
 
@@ -248,28 +243,6 @@ const Contact = () => {
                           />
                         </FormControl>
                         <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="agreeToTerms"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                        <FormControl>
-                          <Checkbox 
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            className="mt-1 rounded border-slate-300 text-teal-600 focus:ring-teal-400" 
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel className="text-slate-600">
-                            I agree to receive communications from M-Kite Kitchen to discuss my inquiry.
-                          </FormLabel>
-                          <FormMessage />
-                        </div>
                       </FormItem>
                     )}
                   />
