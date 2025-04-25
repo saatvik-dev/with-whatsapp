@@ -1,0 +1,23 @@
+[
+  {
+    "column_name": "id",
+    "data_type": "integer",
+    "character_maximum_length": null,
+    "column_default": "nextval('users_id_seq'::regclass)",
+    "is_nullable": "NO"
+  },
+  {
+    "column_name": "username",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "column_default": null,
+    "is_nullable": "NO"
+  },
+  {
+    "column_name": "password",
+    "data_type": "text",
+    "character_maximum_length": null,
+    "column_default": null,
+    "is_nullable": "NO"
+  }
+]
