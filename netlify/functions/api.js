@@ -333,6 +333,15 @@ exports.handler = async (event, context) => {
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
   };
 
+  // Log request details for debugging
+  console.log('Netlify Function: Received request', { 
+    path: event.path,
+    method: event.httpMethod,
+    rawPath: event.rawPath,
+    rawQuery: event.rawQueryString,
+    body: event.body ? 'PRESENT' : 'EMPTY'
+  });
+
   // Handle preflight requests
   if (event.httpMethod === 'OPTIONS') {
     return {
@@ -341,8 +350,21 @@ exports.handler = async (event, context) => {
     };
   }
   
-  // Extract path and method
-  const path = event.path.replace('/.netlify/functions/api', '');
+  // Extract path and method - handle multiple possible path formats
+  let path = event.path;
+  
+  // Remove the Netlify Functions prefix if present
+  if (path.startsWith('/.netlify/functions/api')) {
+    path = path.replace('/.netlify/functions/api', '');
+  }
+  
+  // If path is now empty, assume it's the root path
+  if (!path || path === '') {
+    path = '/';
+  }
+  
+  console.log('Processed API path:', path);
+  
   const method = event.httpMethod;
   
   // Initialize database connection on first request
@@ -395,19 +417,30 @@ exports.handler = async (event, context) => {
     
     // Handle API routes
     let response;
+    console.log('Routing API request to:', path, method);
     
-    if (path === '/contact' && method === 'POST') {
+    // Check both exact path match and if path ends with the route
+    // This helps handle cases where the path might have additional segments
+    const pathMatches = (routePath) => {
+      return path === routePath || path.endsWith(routePath);
+    };
+    
+    if ((pathMatches('/contact') || pathMatches('/api/contact')) && method === 'POST') {
+      console.log('Processing contact form submission');
       const body = JSON.parse(event.body || '{}');
       response = await handleContactSubmission(body);
     } 
-    else if (path === '/subscribe' && method === 'POST') {
+    else if ((pathMatches('/subscribe') || pathMatches('/api/subscribe')) && method === 'POST') {
+      console.log('Processing newsletter subscription');
       const body = JSON.parse(event.body || '{}');
       response = await handleNewsletterSubscription(body);
     }
-    else if (path === '/admin/contacts' && method === 'GET') {
+    else if ((pathMatches('/admin/contacts') || pathMatches('/api/admin/contacts')) && method === 'GET') {
+      console.log('Getting all contacts');
       response = await getAllContacts();
     }
-    else if (path === '/admin/newsletters' && method === 'GET') {
+    else if ((pathMatches('/admin/newsletters') || pathMatches('/api/admin/newsletters')) && method === 'GET') {
+      console.log('Getting all newsletter subscriptions');
       response = await getAllNewsletters();
     }
     else if (path === '/db-health' && method === 'GET') {
@@ -445,11 +478,32 @@ exports.handler = async (event, context) => {
       }
     }
     else {
+      console.error('API endpoint not found:', {
+        path,
+        originalPath: event.path,
+        method,
+        availableEndpoints: [
+          '/contact (POST)',
+          '/api/contact (POST)',
+          '/subscribe (POST)',
+          '/api/subscribe (POST)',
+          '/admin/contacts (GET)',
+          '/api/admin/contacts (GET)',
+          '/admin/newsletters (GET)',
+          '/api/admin/newsletters (GET)',
+          '/db-health (GET)'
+        ]
+      });
+      
       response = {
         statusCode: 404,
         body: JSON.stringify({
           success: false,
-          message: 'API endpoint not found'
+          message: 'API endpoint not found',
+          path: path,
+          method: method,
+          requestedUrl: event.path,
+          timestamp: new Date().toISOString()
         })
       };
     }

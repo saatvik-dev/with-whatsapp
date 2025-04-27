@@ -107,8 +107,18 @@ If your API functions can't connect to the database:
 If your API endpoints return 404 errors:
 
 1. Ensure the path matches what your frontend is expecting
-2. Check Netlify redirects are configured correctly
+2. Check Netlify redirects are configured correctly in both netlify.toml and the generated _redirects file
 3. Verify Netlify Functions are deployed correctly
+
+If you encounter the "API endpoint not found" error when submitting forms:
+
+1. Check the Netlify Function logs in the Netlify dashboard (Functions tab) to see the exact path being requested
+2. Make sure the environment variables (VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY) are set correctly
+3. Try deploying again after making changes to the redirects rules
+4. For manual testing, try calling your API endpoints directly via curl or Postman to see the raw response:
+   ```
+   curl -X POST https://your-netlify-site.netlify.app/.netlify/functions/api/subscribe -H "Content-Type: application/json" -d '{"email":"test@example.com"}'
+   ```
 
 ### Frontend Not Finding API
 

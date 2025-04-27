@@ -11,6 +11,20 @@
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
   status = 200
+  force = true
+
+# Direct API endpoint access (without /api prefix)
+[[redirects]]
+  from = "/contact"
+  to = "/.netlify/functions/api/contact"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/subscribe"
+  to = "/.netlify/functions/api/subscribe"
+  status = 200
+  force = true
 
 # All other routes to index.html for SPA routing
 [[redirects]]

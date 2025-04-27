@@ -44,6 +44,10 @@ async function buildForNetlify() {
 # API routes to Netlify Functions
 /api/*  /.netlify/functions/api/:splat  200
 
+# Direct API endpoint access (without /api prefix)
+/contact  /.netlify/functions/api/contact  200
+/subscribe  /.netlify/functions/api/subscribe  200
+
 # All other routes go to index.html for SPA routing
 /*    /index.html   200
 `;
