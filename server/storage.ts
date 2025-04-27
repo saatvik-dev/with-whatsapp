@@ -5,6 +5,8 @@ import {
 } from "@shared/schema";
 import { eq } from 'drizzle-orm';
 import { db } from './db';
+// Import SupabaseStorage implementation
+import { SupabaseStorage } from './supabase-storage';
 
 // Storage interface with CRUD methods
 export interface IStorage {
@@ -244,16 +246,25 @@ const mightBeSwapped = () => {
   );
 };
 
-// Check if we have valid database credentials
-if ((supabaseUrl && supabaseKey && !mightBeSwapped()) || process.env.DATABASE_URL) {
-  console.log("Using PostgreSQL storage implementation");
-  storageImplementation = new PostgresStorage();
-} else {
+// Function to check if we have valid credentials (even if swapped)
+const hasValidCredentials = () => {
+  // If credentials are present but swapped
   if (mightBeSwapped()) {
-    console.warn("WARNING: Supabase credentials appear to be swapped, falling back to in-memory storage");
-  } else {
-    console.log("Using in-memory storage implementation");
+    return true;
   }
+  
+  // Normal valid credentials check
+  return (
+    (supabaseUrl && supabaseKey && supabaseUrl.startsWith('http') && supabaseKey.startsWith('ey'))
+  );
+};
+
+// Determine which storage implementation to use
+if (hasValidCredentials()) {
+  console.log("Using Supabase storage implementation");
+  storageImplementation = new SupabaseStorage();
+} else {
+  console.log("Using in-memory storage implementation");
   storageImplementation = new MemStorage();
 }
 

@@ -4,8 +4,17 @@ import { storage } from "./storage";
 import { insertContactSchema, insertNewsletterSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
+import { initializeTables } from "./supabase";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Initialize database tables before setting up routes
+  try {
+    await initializeTables();
+    console.log("Database tables initialized successfully");
+  } catch (error) {
+    console.error("Error initializing database tables:", error);
+  }
+  
   // put application routes here
   // prefix all routes with /api
 
