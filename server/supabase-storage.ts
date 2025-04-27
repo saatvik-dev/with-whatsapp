@@ -60,6 +60,14 @@ class InMemoryFallback {
 
 // Supabase-specific storage implementation
 export class SupabaseStorage implements IStorage {
+  private fallback: InMemoryFallback;
+  private useInMemoryFallback: boolean = false;
+  
+  constructor() {
+    this.fallback = new InMemoryFallback();
+    // We'll determine if we need to use fallback storage during initialization
+  }
+  
   // Initialize database tables
   async initializeDatabase(): Promise<void> {
     try {
@@ -67,14 +75,41 @@ export class SupabaseStorage implements IStorage {
         throw new Error("Supabase client not initialized");
       }
       
+      // Check if tables exist
+      const { error: usersError } = await supabase.from('users').select('id').limit(1);
+      const { error: contactsError } = await supabase.from('contact_submissions').select('id').limit(1);
+      const { error: newslettersError } = await supabase.from('newsletters').select('id').limit(1);
+      
+      // If any tables don't exist, use in-memory fallback
+      if (
+        (usersError && usersError.code === '42P01') || 
+        (contactsError && contactsError.code === '42P01') || 
+        (newslettersError && newslettersError.code === '42P01')
+      ) {
+        console.warn("Some required tables don't exist in Supabase. Using in-memory fallback for development.");
+        console.warn("To create the tables, use the SQL in scripts/create-tables.sql");
+        this.useInMemoryFallback = true;
+      } else {
+        console.log("All required tables exist in Supabase database.");
+      }
+      
       console.log("Database initialized successfully");
     } catch (error) {
       console.error("Error initializing database:", error);
+      console.warn("Using in-memory fallback due to database initialization error");
+      this.useInMemoryFallback = true;
     }
   }
 
   // User methods
   async getUser(id: number): Promise<User | undefined> {
+    // If using fallback, check in-memory data
+    if (this.useInMemoryFallback) {
+      console.log("Using in-memory fallback for getting user");
+      const users = this.fallback.getUsers();
+      return users.find(user => user.id === id);
+    }
+    
     try {
       if (!supabase) throw new Error("Supabase client not initialized");
       
@@ -84,15 +119,33 @@ export class SupabaseStorage implements IStorage {
         .eq('id', id)
         .single();
       
-      if (error) throw error;
+      if (error) {
+        // If the table doesn't exist, use fallback
+        if (error.code === '42P01') {
+          console.warn("users table doesn't exist, using in-memory fallback");
+          this.useInMemoryFallback = true;
+          return this.getUser(id);
+        }
+        // PGRST116 is "no rows returned"
+        if (error.code !== 'PGRST116') throw error;
+      }
       return data as User;
     } catch (error) {
       console.error("Error getting user:", error);
+      // On error, switch to fallback
+      this.useInMemoryFallback = true;
       return undefined;
     }
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
+    // If using fallback, check in-memory data
+    if (this.useInMemoryFallback) {
+      console.log("Using in-memory fallback for getting user by username");
+      const users = this.fallback.getUsers();
+      return users.find(user => user.username === username);
+    }
+    
     try {
       if (!supabase) throw new Error("Supabase client not initialized");
       
@@ -102,17 +155,36 @@ export class SupabaseStorage implements IStorage {
         .eq('username', username)
         .single();
       
-      if (error && error.code !== 'PGRST116') throw error; // PGRST116 is "no rows returned"
+      if (error) {
+        // If the table doesn't exist, use fallback
+        if (error.code === '42P01') {
+          console.warn("users table doesn't exist, using in-memory fallback");
+          this.useInMemoryFallback = true;
+          return this.getUserByUsername(username);
+        }
+        // PGRST116 is "no rows returned"
+        if (error.code !== 'PGRST116') throw error;
+      }
       return data as User;
     } catch (error) {
       console.error("Error getting user by username:", error);
+      // On error, switch to fallback
+      this.useInMemoryFallback = true;
       return undefined;
     }
   }
 
   async createUser(userData: InsertUser): Promise<User> {
     try {
-      if (!supabase) throw new Error("Supabase client not initialized");
+      // If using fallback, use in-memory storage
+      if (this.useInMemoryFallback || !supabase) {
+        console.log("Using in-memory fallback for creating user");
+        const user: User = {
+          id: 1, // Will be updated by addUser
+          ...userData
+        };
+        return this.fallback.addUser(user);
+      }
       
       const { data, error } = await supabase
         .from('users')
@@ -120,9 +192,25 @@ export class SupabaseStorage implements IStorage {
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        // If the table doesn't exist, use fallback
+        if (error.code === '42P01') {
+          console.warn("users table doesn't exist, using in-memory fallback");
+          this.useInMemoryFallback = true;
+          return this.createUser(userData);
+        }
+        throw error;
+      }
       return data as User;
     } catch (error) {
+      // If there's an error and we're not already using fallback, try to use it
+      if (!this.useInMemoryFallback) {
+        console.error("Error creating user:", error);
+        console.warn("Switching to in-memory fallback for future operations");
+        this.useInMemoryFallback = true;
+        return this.createUser(userData);
+      }
+      
       console.error("Error creating user:", error);
       throw error;
     }
@@ -131,7 +219,21 @@ export class SupabaseStorage implements IStorage {
   // Contact methods
   async createContactSubmission(contactData: InsertContact): Promise<Contact> {
     try {
-      if (!supabase) throw new Error("Supabase client not initialized");
+      // If using fallback or the tables don't exist, use in-memory storage
+      if (this.useInMemoryFallback || !supabase) {
+        console.log("Using in-memory fallback for contact submission");
+        const now = new Date();
+        const contact: Contact = {
+          id: 1, // Will be updated by addContact
+          name: contactData.name,
+          email: contactData.email,
+          phone: contactData.phone,
+          kitchenSize: contactData.kitchenSize || null,
+          message: contactData.message || null,
+          createdAt: now
+        };
+        return this.fallback.addContact(contact);
+      }
       
       // Add created_at timestamp
       const dataWithTimestamp = {
@@ -149,7 +251,15 @@ export class SupabaseStorage implements IStorage {
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        // If the table doesn't exist, use fallback
+        if (error.code === '42P01') {
+          console.warn("contact_submissions table doesn't exist, using in-memory fallback");
+          this.useInMemoryFallback = true;
+          return this.createContactSubmission(contactData);
+        }
+        throw error;
+      }
       
       // Convert snake_case back to camelCase for the frontend
       return {
@@ -158,12 +268,26 @@ export class SupabaseStorage implements IStorage {
         createdAt: data.created_at
       } as Contact;
     } catch (error) {
+      // If there's an error and we're not already using fallback, try to use it
+      if (!this.useInMemoryFallback) {
+        console.error("Error creating contact submission:", error);
+        console.warn("Switching to in-memory fallback for future operations");
+        this.useInMemoryFallback = true;
+        return this.createContactSubmission(contactData);
+      }
+      
       console.error("Error creating contact submission:", error);
       throw error;
     }
   }
 
   async getAllContactSubmissions(): Promise<Contact[]> {
+    // If using fallback, return in-memory data
+    if (this.useInMemoryFallback) {
+      console.log("Using in-memory fallback for getting contact submissions");
+      return this.fallback.getContacts();
+    }
+    
     try {
       if (!supabase) throw new Error("Supabase client not initialized");
       
@@ -172,7 +296,15 @@ export class SupabaseStorage implements IStorage {
         .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        // If the table doesn't exist, use fallback
+        if (error.code === '42P01') {
+          console.warn("contact_submissions table doesn't exist, using in-memory fallback");
+          this.useInMemoryFallback = true;
+          return this.fallback.getContacts();
+        }
+        throw error;
+      }
       
       // Convert snake_case to camelCase
       return data.map(item => ({
@@ -182,14 +314,26 @@ export class SupabaseStorage implements IStorage {
       })) as Contact[];
     } catch (error) {
       console.error("Error getting all contact submissions:", error);
-      return [];
+      // On error, use fallback and return empty array
+      this.useInMemoryFallback = true;
+      return this.fallback.getContacts();
     }
   }
 
   // Newsletter methods
   async subscribeToNewsletter(newsletterData: InsertNewsletter): Promise<Newsletter> {
     try {
-      if (!supabase) throw new Error("Supabase client not initialized");
+      // If using fallback, use in-memory storage
+      if (this.useInMemoryFallback || !supabase) {
+        console.log("Using in-memory fallback for newsletter subscription");
+        const now = new Date();
+        const newsletter: Newsletter = {
+          id: 1, // Will be updated by addNewsletter
+          email: newsletterData.email,
+          createdAt: now
+        };
+        return this.fallback.addNewsletter(newsletter);
+      }
       
       const { data, error } = await supabase
         .from('newsletters')
@@ -200,19 +344,41 @@ export class SupabaseStorage implements IStorage {
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        // If the table doesn't exist, use fallback
+        if (error.code === '42P01') {
+          console.warn("newsletters table doesn't exist, using in-memory fallback");
+          this.useInMemoryFallback = true;
+          return this.subscribeToNewsletter(newsletterData);
+        }
+        throw error;
+      }
       
       return {
         ...data,
         createdAt: data.created_at
       } as Newsletter;
     } catch (error) {
+      // If there's an error and we're not already using fallback, try to use it
+      if (!this.useInMemoryFallback) {
+        console.error("Error subscribing to newsletter:", error);
+        console.warn("Switching to in-memory fallback for future operations");
+        this.useInMemoryFallback = true;
+        return this.subscribeToNewsletter(newsletterData);
+      }
+      
       console.error("Error subscribing to newsletter:", error);
       throw error;
     }
   }
 
   async isEmailSubscribed(email: string): Promise<boolean> {
+    // If using fallback, check in-memory data
+    if (this.useInMemoryFallback) {
+      console.log("Using in-memory fallback for checking if email is subscribed");
+      return !!this.fallback.findNewsletterByEmail(email);
+    }
+    
     try {
       if (!supabase) throw new Error("Supabase client not initialized");
       
@@ -221,16 +387,32 @@ export class SupabaseStorage implements IStorage {
         .select('id')
         .eq('email', email);
       
-      if (error) throw error;
+      if (error) {
+        // If the table doesn't exist, use fallback
+        if (error.code === '42P01') {
+          console.warn("newsletters table doesn't exist, using in-memory fallback");
+          this.useInMemoryFallback = true;
+          return this.isEmailSubscribed(email);
+        }
+        throw error;
+      }
       
       return data.length > 0;
     } catch (error) {
       console.error("Error checking if email is subscribed:", error);
-      return false;
+      // On error, switch to fallback
+      this.useInMemoryFallback = true;
+      return this.isEmailSubscribed(email);
     }
   }
   
   async getAllNewsletterSubscriptions(): Promise<Newsletter[]> {
+    // If using fallback, return in-memory data
+    if (this.useInMemoryFallback) {
+      console.log("Using in-memory fallback for getting newsletter subscriptions");
+      return this.fallback.getNewsletters();
+    }
+    
     try {
       if (!supabase) throw new Error("Supabase client not initialized");
       
@@ -239,7 +421,15 @@ export class SupabaseStorage implements IStorage {
         .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        // If the table doesn't exist, use fallback
+        if (error.code === '42P01') {
+          console.warn("newsletters table doesn't exist, using in-memory fallback");
+          this.useInMemoryFallback = true;
+          return this.fallback.getNewsletters();
+        }
+        throw error;
+      }
       
       return data.map(item => ({
         ...item,
@@ -247,7 +437,9 @@ export class SupabaseStorage implements IStorage {
       })) as Newsletter[];
     } catch (error) {
       console.error("Error getting all newsletter subscriptions:", error);
-      return [];
+      // On error, switch to fallback and return empty array
+      this.useInMemoryFallback = true;
+      return this.fallback.getNewsletters();
     }
   }
 }
