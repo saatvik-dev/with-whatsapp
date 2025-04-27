@@ -1,101 +1,139 @@
-# Netlify Deployment Guide for M-Kite Kitchen
+# M-Kite Kitchen Netlify Deployment Guide
 
-This guide provides step-by-step instructions for deploying the M-Kite Kitchen website to Netlify with proper database configuration.
+This guide will help you deploy your M-Kite Kitchen application to Netlify. Both the frontend and backend will be hosted on Netlify using the serverless functions approach.
+
+## Architecture Overview
+
+- **Frontend**: React (Vite) - hosted on Netlify
+- **Backend API**: Netlify Functions - serverless functions hosted on Netlify
+- **Database**: PostgreSQL (external provider required)
 
 ## Prerequisites
 
-1. A Netlify account
-2. A PostgreSQL database (either through Heroku, Neon, Railway, or similar services)
+1. A Netlify account (sign up at [netlify.com](https://netlify.com))
+2. A PostgreSQL database (from providers like Neon, Supabase, or Render)
+3. Your code pushed to a Git repository (GitHub, GitLab, or Bitbucket)
 
-## Environment Variables
+## Setting Up Your Database
 
-The following environment variables must be set in your Netlify deployment settings:
+Before deploying to Netlify, you need a PostgreSQL database:
 
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | Your PostgreSQL connection string with SSL enabled |
-| `NODE_VERSION` | Set to `20` for compatibility |
+1. Sign up for a database service like [Neon](https://neon.tech/) (recommended), [Supabase](https://supabase.com/), or [Render](https://render.com/)
+2. Create a new PostgreSQL database
+3. Get your connection string, which should look like:
+   ```
+   postgresql://username:password@hostname:port/database
+   ```
+4. Make sure your database provider allows connections from Netlify's IP addresses
+5. Keep this connection string secure - you'll need it for Netlify environment variables
 
-### Optional Environment Variables
+## Deploying to Netlify
 
-If you want to use Supabase instead of direct PostgreSQL connection:
+### Option 1: Deploy via Netlify UI (Recommended)
 
-| Variable | Description |
-|----------|-------------|
-| `VITE_SUPABASE_URL` | Your Supabase project URL (e.g., https://your-project-id.supabase.co) |
-| `VITE_SUPABASE_ANON_KEY` | Your Supabase anonymous/public API key |
+1. **Push your code to a Git repository**
+   - Make sure your repository is public or Netlify has access to it
 
-## Deployment Steps
+2. **Log in to Netlify**
+   - Go to [app.netlify.com](https://app.netlify.com/)
+   - Sign in with your account
 
-1. **Connect your repository to Netlify**
-   - Sign in to Netlify
-   - Click "New site from Git"
-   - Select your Git provider and repository
-   - Configure build settings:
-     - Build command: `node netlify-build.js`
-     - Publish directory: `dist/public`
+3. **Create a new site**
+   - Click "Add new site" and select "Import an existing project"
+   - Connect to your Git provider
+   - Select your repository
 
-2. **Set environment variables**
-   - Go to Site settings > Environment variables
-   - Add all required environment variables mentioned above
+4. **Configure build settings**
+   - Build command: `node netlify-build.js`
+   - Publish directory: `dist/public`
 
-3. **Configure database**
-   - Ensure your PostgreSQL database is accessible from Netlify
-   - If using Heroku or similar services, make sure SSL is enabled
+5. **Set environment variables**
+   - Click "Site settings" > "Environment variables"
+   - Add the following variables:
+     - `DATABASE_URL`: Your PostgreSQL connection string
+     - Any other API keys or secrets your application needs
 
-4. **Deploy the site**
-   - Trigger a new deployment from the Netlify dashboard
-   - The first deployment will automatically create the necessary database tables
+6. **Deploy your site**
+   - Click "Deploy site"
+   - Wait for the build to complete
 
-## Database Migration
+7. **Check your deployment**
+   - Once deployed, Netlify will provide a URL to access your site
+   - Test both the frontend and API endpoints
 
-The application will automatically create the required database tables on first deployment. If you need to manually create the tables, you can use the following SQL:
+### Option 2: Deploy via Netlify CLI
 
-```sql
-CREATE TABLE IF NOT EXISTS contact_submissions (
-  id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  phone TEXT NOT NULL,
-  kitchen_size TEXT,
-  message TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
-);
+1. **Install Netlify CLI** (if not already installed):
+   ```bash
+   npm install netlify-cli -g
+   ```
 
-CREATE TABLE IF NOT EXISTS newsletters (
-  id SERIAL PRIMARY KEY,
-  email TEXT NOT NULL UNIQUE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
-);
-```
+2. **Login to Netlify**:
+   ```bash
+   netlify login
+   ```
+
+3. **Initialize Your Site**:
+   ```bash
+   netlify init
+   ```
+   - Choose "Create & configure a new site"
+   - Follow the prompts to select your team and set a site name
+
+4. **Set Environment Variables**:
+   ```bash
+   netlify env:set DATABASE_URL your-database-connection-string
+   ```
+   - Add any other environment variables your application needs
+
+5. **Deploy Your Site**:
+   ```bash
+   netlify deploy --build
+   ```
 
 ## Troubleshooting
 
-### Contact Form Not Working
+### Database Connection Issues
 
-If the contact form submissions are failing:
+If your API functions can't connect to the database:
 
-1. **Check database connection**
-   - Verify the `DATABASE_URL` environment variable is correct
-   - Ensure the database is accessible from Netlify (check firewall rules)
-   - Test the connection by visiting `/api/db-health` endpoint
+1. Verify the `DATABASE_URL` environment variable is set correctly in Netlify
+2. Ensure your database provider allows connections from Netlify's IP addresses
+3. Check if your database requires SSL connections
+4. Look at Netlify Function logs in the Netlify dashboard
 
-2. **Check Netlify Function logs**
-   - Go to Netlify dashboard > Functions
-   - View the logs for the `postgres-api` function
-   - Look for any connection errors or SQL errors
+### API Not Working
 
-3. **SSL Issues**
-   - Make sure your database connection string includes SSL parameters
-   - For Heroku/Neon: Add `?sslmode=require` to your connection string
+If your API endpoints return 404 errors:
 
-### Database Tables Not Created
+1. Ensure the path matches what your frontend is expecting
+2. Check Netlify redirects are configured correctly
+3. Verify Netlify Functions are deployed correctly
 
-If the tables aren't being created automatically:
+### Frontend Not Finding API
 
-1. Run the SQL commands manually using your database client
-2. Check the Netlify function logs for errors during table creation
+If your frontend can't connect to your API:
 
-## Support
+1. Make sure API calls are directed to `/api/*` and not directly to Netlify Functions
+2. Verify that your frontend is using relative URLs for API calls
+3. Check browser console for CORS errors
 
-If you encounter any issues with the deployment, please reach out to the development team for assistance.
+## Maintenance and Updates
+
+### Updating Your Site
+
+To update your site after making changes:
+
+1. Push changes to your Git repository
+2. Netlify will automatically rebuild and deploy (if you set up continuous deployment)
+
+### Monitoring
+
+1. Use Netlify's built-in analytics to monitor site performance
+2. Check function logs in the Netlify dashboard under "Functions"
+
+## Additional Resources
+
+- [Netlify Functions Documentation](https://docs.netlify.com/functions/overview/)
+- [Netlify Environment Variables](https://docs.netlify.com/configure-builds/environment-variables/)
+- [Netlify Redirects](https://docs.netlify.com/routing/redirects/)
