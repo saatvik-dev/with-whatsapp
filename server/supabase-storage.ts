@@ -6,6 +6,58 @@ import {
 } from "@shared/schema";
 import { IStorage } from './storage';
 
+// Fallback in-memory storage for development when tables don't exist
+class InMemoryFallback {
+  private users: Map<number, User> = new Map();
+  private contacts: Map<number, Contact> = new Map();
+  private newsletters: Map<number, Newsletter> = new Map();
+  private userIdCounter = 1;
+  private contactIdCounter = 1;
+  private newsletterIdCounter = 1;
+
+  // User methods
+  addUser(user: User): User {
+    const id = user.id || this.userIdCounter++;
+    const newUser = { ...user, id };
+    this.users.set(id, newUser);
+    return newUser;
+  }
+
+  getUsers(): User[] {
+    return Array.from(this.users.values());
+  }
+
+  // Contact methods
+  addContact(contact: Contact): Contact {
+    const id = contact.id || this.contactIdCounter++;
+    const newContact = { ...contact, id };
+    this.contacts.set(id, newContact);
+    return newContact;
+  }
+
+  getContacts(): Contact[] {
+    return Array.from(this.contacts.values());
+  }
+
+  // Newsletter methods
+  addNewsletter(newsletter: Newsletter): Newsletter {
+    const id = newsletter.id || this.newsletterIdCounter++;
+    const newNewsletter = { ...newsletter, id };
+    this.newsletters.set(id, newNewsletter);
+    return newNewsletter;
+  }
+
+  getNewsletters(): Newsletter[] {
+    return Array.from(this.newsletters.values());
+  }
+
+  findNewsletterByEmail(email: string): Newsletter | undefined {
+    return Array.from(this.newsletters.values()).find(
+      newsletter => newsletter.email === email
+    );
+  }
+}
+
 // Supabase-specific storage implementation
 export class SupabaseStorage implements IStorage {
   // Initialize database tables

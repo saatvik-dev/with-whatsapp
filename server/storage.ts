@@ -7,6 +7,7 @@ import { eq } from 'drizzle-orm';
 import { db } from './db';
 // Import SupabaseStorage implementation
 import { SupabaseStorage } from './supabase-storage';
+import { supabase } from './supabase';
 
 // Storage interface with CRUD methods
 export interface IStorage {
