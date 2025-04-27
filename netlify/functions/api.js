@@ -335,6 +335,40 @@ exports.handler = async (event, context) => {
     else if (path === '/admin/newsletters' && method === 'GET') {
       response = await getAllNewsletters();
     }
+    else if (path === '/db-health' && method === 'GET') {
+      // Database health check
+      try {
+        // Try to query the database
+        const contacts = await getAllContacts();
+        const newsletters = await getAllNewsletters();
+        
+        response = {
+          statusCode: 200,
+          body: JSON.stringify({
+            success: true,
+            message: 'Database connection is healthy',
+            timestamp: new Date().toISOString(),
+            details: {
+              contactCount: contacts.data ? contacts.data.length : 0,
+              newsletterCount: newsletters.data ? newsletters.data.length : 0,
+              dbType: 'Supabase'
+            }
+          })
+        };
+      } catch (error) {
+        console.error("Database health check failed:", error);
+        
+        response = {
+          statusCode: 500,
+          body: JSON.stringify({
+            success: false,
+            message: 'Database connection failed',
+            error: error.message,
+            timestamp: new Date().toISOString()
+          })
+        };
+      }
+    }
     else {
       response = {
         statusCode: 404,

@@ -127,6 +127,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  
+  // Database health check endpoint
+  app.get("/api/db-health", async (_req: Request, res: Response) => {
+    try {
+      // Try to query the database by accessing a simple count
+      const contacts = await storage.getAllContactSubmissions();
+      const newsletters = await storage.getAllNewsletterSubscriptions();
+      
+      return res.status(200).json({
+        success: true,
+        message: 'Database connection is healthy',
+        timestamp: new Date().toISOString(),
+        details: {
+          contactCount: contacts.length,
+          newsletterCount: newsletters.length,
+          dbType: process.env.VITE_SUPABASE_URL ? 'Supabase' : 'PostgreSQL'
+        }
+      });
+    } catch (error: any) {
+      console.error("Database health check failed:", error);
+      
+      return res.status(500).json({
+        success: false,
+        message: 'Database connection failed',
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
 
   const httpServer = createServer(app);
 
