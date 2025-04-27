@@ -6,14 +6,14 @@ let supabase;
 
 function initializeDatabase() {
   try {
-    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+    if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) {
       console.error('Supabase environment variables are not set');
       return false;
     }
 
     supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_ANON_KEY
+      process.env.VITE_SUPABASE_URL,
+      process.env.VITE_SUPABASE_ANON_KEY
     );
     
     return true;
@@ -91,12 +91,12 @@ async function handleContactSubmission(body) {
 // Newsletter subscription handler
 async function handleNewsletterSubscription(body) {
   try {
-    if (!db) {
+    if (!supabase) {
       return {
         statusCode: 500,
         body: JSON.stringify({
           success: false,
-          message: 'Database connection not available'
+          message: 'Supabase connection not available'
         })
       };
     }
@@ -115,7 +115,14 @@ async function handleNewsletterSubscription(body) {
     }
 
     // Check if email already subscribed
-    const existingSubscriptions = await db.select().from('newsletters').where('email', '=', email);
+    const { data: existingSubscriptions, error: selectError } = await supabase
+      .from('newsletters')
+      .select('*')
+      .eq('email', email);
+    
+    if (selectError) {
+      throw selectError;
+    }
     
     if (existingSubscriptions && existingSubscriptions.length > 0) {
       return {
@@ -128,10 +135,16 @@ async function handleNewsletterSubscription(body) {
     }
 
     // Create new subscription
-    await db.insert('newsletters').values({
-      email,
-      subscribedAt: new Date().toISOString()
-    });
+    const { error: insertError } = await supabase
+      .from('newsletters')
+      .insert([{
+        email,
+        created_at: new Date().toISOString()
+      }]);
+
+    if (insertError) {
+      throw insertError;
+    }
 
     return {
       statusCode: 200,
@@ -156,17 +169,24 @@ async function handleNewsletterSubscription(body) {
 // Retrieve all contact submissions
 async function getAllContacts() {
   try {
-    if (!db) {
+    if (!supabase) {
       return {
         statusCode: 500,
         body: JSON.stringify({
           success: false,
-          message: 'Database connection not available'
+          message: 'Supabase connection not available'
         })
       };
     }
 
-    const contacts = await db.select().from('contactSubmissions').orderBy('createdAt desc');
+    const { data: contacts, error } = await supabase
+      .from('contact_submissions')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      throw error;
+    }
 
     return {
       statusCode: 200,
@@ -191,17 +211,24 @@ async function getAllContacts() {
 // Retrieve all newsletter subscriptions
 async function getAllNewsletters() {
   try {
-    if (!db) {
+    if (!supabase) {
       return {
         statusCode: 500,
         body: JSON.stringify({
           success: false,
-          message: 'Database connection not available'
+          message: 'Supabase connection not available'
         })
       };
     }
 
-    const newsletters = await db.select().from('newsletters').orderBy('subscribedAt desc');
+    const { data: newsletters, error } = await supabase
+      .from('newsletters')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      throw error;
+    }
 
     return {
       statusCode: 200,
