@@ -9,6 +9,12 @@
 # API routes to Netlify Functions
 [[redirects]]
   from = "/api/*"
+  to = "/.netlify/functions/postgres-api/:splat"
+  status = 200
+  
+# Legacy API route (fallback)
+[[redirects]]
+  from = "/legacy-api/*"
   to = "/.netlify/functions/api/:splat"
   status = 200
 
