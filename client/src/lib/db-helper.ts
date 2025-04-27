@@ -13,6 +13,18 @@ const isValidUrl = (urlString: string): boolean => {
   }
 };
 
+// Check if we have valid Supabase credentials
+export const hasSupabaseCredentials = (): boolean => {
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string || '';
+  const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string || '';
+  
+  return Boolean(
+    supabaseUrl && 
+    supabaseKey && 
+    isValidUrl(supabaseUrl)
+  );
+};
+
 // Check whether we're using Netlify deployment
 export const isNetlifyDeployment = (): boolean => {
   // Check for Netlify environment variable or URL pattern
@@ -22,12 +34,7 @@ export const isNetlifyDeployment = (): boolean => {
   );
 };
 
-// For backward compatibility with existing code
-export const hasSupabaseCredentials = (): boolean => {
-  return false; // We're using NeonDB directly now
-};
-
-// Determine if we should use Netlify functions or direct API
+// Determine if we should use Supabase (on Netlify) or direct API (local development)
 export const useSupabaseBackend = (): boolean => {
-  return isNetlifyDeployment(); // If we're on Netlify, use Netlify functions
+  return hasSupabaseCredentials() && isNetlifyDeployment();
 };
