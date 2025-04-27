@@ -18,9 +18,25 @@ const isValidUrl = (urlString: string): boolean => {
   }
 };
 
+// Function to check if credentials might be swapped
+const mightBeSwapped = (): boolean => {
+  return (
+    supabaseUrl && 
+    supabaseKey && 
+    supabaseUrl.startsWith('ey') && 
+    supabaseKey.startsWith('http')
+  );
+};
+
+// Check for potentially swapped credentials
+if (mightBeSwapped()) {
+  console.warn("⚠️ WARNING: Supabase URL and key appear to be swapped!");
+  console.warn("VITE_SUPABASE_URL should be a URL (https://...) and VITE_SUPABASE_ANON_KEY should be a token");
+  console.log('Using local development environment with direct database connection');
+} 
 // Only create the client if we have valid credentials AND we're in a Netlify environment
 // OR if we explicitly need to use Supabase locally for testing
-if (supabaseUrl && supabaseKey && isValidUrl(supabaseUrl)) {
+else if (supabaseUrl && supabaseKey && isValidUrl(supabaseUrl)) {
   try {
     // Create a single supabase client for interacting with your database
     supabaseClient = createClient(supabaseUrl, supabaseKey);
