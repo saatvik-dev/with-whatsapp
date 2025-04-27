@@ -1,40 +1,24 @@
 // Netlify serverless function that handles API requests
-const { Pool } = require('pg');
-const { drizzle } = require('drizzle-orm/pg-core');
+const { createClient } = require('@supabase/supabase-js');
 
-// Initialize database connection
-let pool;
-let db;
+// Initialize Supabase client
+let supabase;
 
 function initializeDatabase() {
   try {
-    if (!process.env.DATABASE_URL) {
-      console.error('DATABASE_URL environment variable is not set');
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+      console.error('Supabase environment variables are not set');
       return false;
     }
 
-    pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false } // Required for some PostgreSQL providers
-    });
+    supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_ANON_KEY
+    );
     
-    // We'll initialize schema manually here since we can't import from shared/schema
-    const schema = {
-      users: {
-        $inferSelect: {}
-      },
-      contactSubmissions: {
-        $inferSelect: {}
-      },
-      newsletters: {
-        $inferSelect: {}
-      }
-    };
-    
-    db = drizzle({ client: pool, schema });
     return true;
   } catch (error) {
-    console.error('Failed to initialize database:', error);
+    console.error('Failed to initialize Supabase connection:', error);
     return false;
   }
 }
@@ -42,12 +26,12 @@ function initializeDatabase() {
 // Contact form submission handler
 async function handleContactSubmission(body) {
   try {
-    if (!db) {
+    if (!supabase) {
       return {
         statusCode: 500,
         body: JSON.stringify({
           success: false,
-          message: 'Database connection not available'
+          message: 'Supabase connection not available'
         })
       };
     }
@@ -65,23 +49,30 @@ async function handleContactSubmission(body) {
       };
     }
 
-    // Create new contact submission
-    const result = await db.insert('contactSubmissions').values({
-      name,
-      email,
-      phone: phone || null,
-      message,
-      kitchenSize: kitchenSize || null,
-      budget: budget || null,
-      createdAt: new Date().toISOString()
-    }).returning();
+    // Create new contact submission using Supabase
+    const { data, error } = await supabase
+      .from('contact_submissions')
+      .insert([{
+        name,
+        email,
+        phone: phone || null,
+        message,
+        kitchen_size: kitchenSize || null,
+        budget: budget || null,
+        created_at: new Date().toISOString()
+      }])
+      .select();
+
+    if (error) {
+      throw error;
+    }
 
     return {
       statusCode: 200,
       body: JSON.stringify({
         success: true,
         message: 'Contact form submission successful',
-        data: result[0] || { id: Date.now() } // Fallback ID if no result returned
+        data: data[0] || { id: Date.now() } // Fallback ID if no result returned
       })
     };
   } catch (error) {
