@@ -346,7 +346,7 @@ exports.handler = async (event, context) => {
   const method = event.httpMethod;
   
   // Initialize database connection on first request
-  const dbInitialized = initializeDatabase();
+  const dbInitialized = await initializeDatabase();
   if (!dbInitialized && path !== '/health') {
     // Use environment variable names that might be used in Netlify
     if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) {
@@ -357,7 +357,8 @@ exports.handler = async (event, context) => {
         process.env.VITE_SUPABASE_URL = process.env.SUPABASE_URL;
         process.env.VITE_SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
         // Try initialization again
-        if (initializeDatabase()) {
+        const reinitialized = await initializeDatabase();
+        if (reinitialized) {
           console.log('Successfully initialized with alternative environment variables');
         } else {
           console.error('Failed to initialize even with alternative environment variables');
