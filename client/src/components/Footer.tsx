@@ -41,9 +41,14 @@ const Footer = () => {
     }
     
     setIsSubmitting(true);
+    console.log("Submitting newsletter subscription for:", email);
     
     try {
-      const response = await fetch('/api/subscribe', {
+      // Explicitly log the URL for troubleshooting
+      const url = '/api/subscribe';
+      console.log("Submitting to:", url);
+      
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,19 +56,37 @@ const Footer = () => {
         body: JSON.stringify({ email }),
       });
       
-      if (response.ok) {
+      console.log("Response status:", response.status);
+      
+      // Get the raw text first for better error diagnostics
+      const responseText = await response.text();
+      console.log("Raw response:", responseText);
+      
+      // Try to parse as JSON
+      let responseData;
+      try {
+        responseData = JSON.parse(responseText);
+        console.log("Server response (parsed):", responseData);
+      } catch (jsonError) {
+        console.error("Failed to parse response as JSON:", jsonError);
+        throw new Error(`Invalid JSON response: ${responseText.substring(0, 100)}...`);
+      }
+      
+      if (response.ok && responseData.success) {
         toast({
           title: "Success!",
           description: "You've been subscribed to our newsletter.",
         });
         setEmail('');
       } else {
-        throw new Error('Failed to subscribe');
+        console.error("Subscription error:", responseData);
+        throw new Error(responseData.message || 'Failed to subscribe');
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Newsletter subscription error:", error);
       toast({
         title: "Error",
-        description: "There was a problem subscribing to the newsletter. Please try again.",
+        description: `There was a problem subscribing to the newsletter: ${error.message || 'Unknown error'}`,
         variant: "destructive",
       });
     } finally {

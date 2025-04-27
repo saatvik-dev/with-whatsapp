@@ -69,7 +69,11 @@ const Contact = () => {
     console.log("Submitting form data:", data);
     
     try {
-      const response = await fetch('/api/contact', {
+      // Explicitly log the URL we're posting to for troubleshooting
+      const url = '/api/contact';
+      console.log("Submitting to:", url);
+      
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,8 +81,21 @@ const Contact = () => {
         body: JSON.stringify(data),
       });
       
-      const responseData = await response.json();
-      console.log("Server response:", responseData);
+      console.log("Response status:", response.status);
+      
+      // Get the raw text first for better error diagnostics
+      const responseText = await response.text();
+      console.log("Raw response:", responseText);
+      
+      // Parse JSON only if it's valid
+      let responseData;
+      try {
+        responseData = JSON.parse(responseText);
+        console.log("Server response (parsed):", responseData);
+      } catch (jsonError) {
+        console.error("Failed to parse response as JSON:", jsonError);
+        throw new Error(`Invalid JSON response: ${responseText.substring(0, 100)}...`);
+      }
       
       if (response.ok && responseData.success) {
         toast({
@@ -94,7 +111,7 @@ const Contact = () => {
       console.error("Contact form submission error:", error);
       toast({
         title: "Error",
-        description: "There was a problem submitting your inquiry. Please try again.",
+        description: `There was a problem submitting your inquiry: ${error.message || 'Unknown error'}`,
         variant: "destructive",
       });
     } finally {
