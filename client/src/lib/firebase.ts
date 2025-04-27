@@ -1,24 +1,26 @@
 // This is a stub file to maintain import compatibility
-// We're now using Netlify deployment with Supabase database integration
+// We're using a dual-database approach:
+// - In development: PostgreSQL database
+// - In Netlify production: Supabase
 
-import { useSupabaseBackend } from './db-helper';
+import { isNetlifyDeployment } from './db-helper';
+
+// Direct import of supabase, which will be null if validation fails in supabase.ts
 import { supabase } from './supabase';
 
 // Create dummy exports to avoid breaking existing imports
 const app = null;
 const analytics = null;
 
-// Log information about the deployment type
-if (useSupabaseBackend()) {
-  console.log('Firebase not initialized: Using Netlify deployment with Supabase integration');
+// Log deployment environment information
+if (supabase) {
+  console.log('Using Supabase integration for data storage');
+} else if (isNetlifyDeployment()) {
+  console.log('Using Netlify deployment with direct database connection');
 } else {
-  console.log('Firebase not initialized: Using Netlify deployment with direct PostgreSQL database');
+  console.log('Using local development environment with direct database connection');
 }
 
-// Export dummy values for Firebase compatibility
-export { app, analytics };
-
-// Export Supabase client for convenience
-export { supabase };
-
+// Export all necessary variables
+export { app, analytics, supabase };
 export default app;

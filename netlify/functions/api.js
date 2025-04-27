@@ -274,14 +274,34 @@ exports.handler = async (event, context) => {
   // Initialize database connection on first request
   const dbInitialized = initializeDatabase();
   if (!dbInitialized && path !== '/health') {
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({
-        success: false,
-        message: 'Failed to initialize database connection'
-      })
-    };
+    // Use environment variable names that might be used in Netlify
+    if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) {
+      console.error('Checking alternative environment variable names...');
+      // Some Netlify deployments might use different env variable names
+      if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) {
+        // Map to the expected names
+        process.env.VITE_SUPABASE_URL = process.env.SUPABASE_URL;
+        process.env.VITE_SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+        // Try initialization again
+        if (initializeDatabase()) {
+          console.log('Successfully initialized with alternative environment variables');
+        } else {
+          console.error('Failed to initialize even with alternative environment variables');
+        }
+      }
+    }
+    
+    // If still not initialized, return error
+    if (!supabase) {
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          message: 'Failed to initialize database connection. Check Supabase credentials.'
+        })
+      };
+    }
   }
   
   try {
