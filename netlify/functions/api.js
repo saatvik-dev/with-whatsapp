@@ -4,27 +4,28 @@ const { createClient } = require('@supabase/supabase-js');
 // Initialize Supabase client
 let supabase;
 
-function initializeDatabase() {
+async function initializeDatabase() {
   try {
     // Check first if we already have a connection
     if (supabase) {
       return true;
     }
     
-    // Check for environment variables
-    if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) {
+    // Check for environment variables - support both VITE_ prefixed and non-prefixed versions
+    // This helps with different Netlify environment variable naming conventions
+    const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+    const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
       console.error('Supabase environment variables are not set: ' + 
-                   (!process.env.VITE_SUPABASE_URL ? 'URL missing' : 'ANON_KEY missing'));
+                   (!supabaseUrl ? 'URL missing' : 'ANON_KEY missing'));
       return false;
     }
 
     console.log('Initializing Supabase client...');
     
     // Create Supabase client
-    supabase = createClient(
-      process.env.VITE_SUPABASE_URL,
-      process.env.VITE_SUPABASE_ANON_KEY
-    );
+    supabase = createClient(supabaseUrl, supabaseKey);
     
     if (!supabase) {
       console.error('Failed to create Supabase client');
@@ -33,19 +34,58 @@ function initializeDatabase() {
     
     console.log('Supabase client initialized successfully');
     
-    // Test the connection asynchronously (doesn't block)
-    supabase.from('contact_submissions')
-      .select('count', { count: 'exact', head: true })
-      .then(result => {
-        if (result.error) {
-          console.error('Error testing Supabase connection:', result.error);
-        } else {
-          console.log('Supabase connection verified successfully');
-        }
-      })
-      .catch(err => {
-        console.error('Failed to test Supabase connection:', err);
-      });
+    // Create tables if they don't exist
+    try {
+      console.log('Checking if tables exist...');
+      
+      // Check users table
+      const { error: usersError } = await supabase.from('users').select('id').limit(1);
+      if (usersError && usersError.code === '42P01') {
+        console.log('Creating users table...');
+        await supabase.sql`
+          CREATE TABLE IF NOT EXISTS users (
+            id SERIAL PRIMARY KEY,
+            username TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL
+          )
+        `;
+      }
+      
+      // Check contact_submissions table
+      const { error: contactsError } = await supabase.from('contact_submissions').select('id').limit(1);
+      if (contactsError && contactsError.code === '42P01') {
+        console.log('Creating contact_submissions table...');
+        await supabase.sql`
+          CREATE TABLE IF NOT EXISTS contact_submissions (
+            id SERIAL PRIMARY KEY,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            phone TEXT NOT NULL,
+            kitchen_size TEXT,
+            message TEXT,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+          )
+        `;
+      }
+      
+      // Check newsletters table
+      const { error: newslettersError } = await supabase.from('newsletters').select('id').limit(1);
+      if (newslettersError && newslettersError.code === '42P01') {
+        console.log('Creating newsletters table...');
+        await supabase.sql`
+          CREATE TABLE IF NOT EXISTS newsletters (
+            id SERIAL PRIMARY KEY,
+            email TEXT NOT NULL UNIQUE,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+          )
+        `;
+      }
+      
+      console.log('Database tables checked/created successfully');
+    } catch (error) {
+      // Just log the error but continue - we'll try to use the database anyway
+      console.error('Error checking/creating tables:', error);
+    }
     
     return true;
   } catch (error) {
