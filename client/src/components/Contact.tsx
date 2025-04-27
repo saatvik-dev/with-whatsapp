@@ -66,6 +66,7 @@ const Contact = () => {
 
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
+    console.log("Submitting form data:", data);
     
     try {
       const response = await fetch('/api/contact', {
@@ -76,16 +77,21 @@ const Contact = () => {
         body: JSON.stringify(data),
       });
       
-      if (response.ok) {
+      const responseData = await response.json();
+      console.log("Server response:", responseData);
+      
+      if (response.ok && responseData.success) {
         toast({
           title: "Success!",
           description: "Your inquiry has been submitted. We'll contact you shortly.",
         });
         form.reset();
       } else {
-        throw new Error('Failed to submit form');
+        console.error("Form submission error:", responseData);
+        throw new Error(responseData.message || 'Failed to submit form');
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Contact form submission error:", error);
       toast({
         title: "Error",
         description: "There was a problem submitting your inquiry. Please try again.",

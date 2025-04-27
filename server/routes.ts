@@ -12,15 +12,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Contact form submission endpoint
   app.post("/api/contact", async (req: Request, res: Response) => {
     try {
+      console.log("Contact form submission received:", req.body);
+      
       const contactData = insertContactSchema.parse({
         name: req.body.name,
         email: req.body.email,
         phone: req.body.phone,
-        kitchenSize: req.body.kitchenSize,
-        message: req.body.message,
+        kitchenSize: req.body.kitchenSize || undefined,
+        message: req.body.message || undefined,
       });
 
+      console.log("Validated contact data:", contactData);
+      
       const submission = await storage.createContactSubmission(contactData);
+      console.log("Contact submission created:", submission);
       
       // In a real app, we would send an email notification here
       
@@ -30,8 +35,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         data: submission,
       });
     } catch (error) {
+      console.error("Contact form submission error:", error);
+      
       if (error instanceof ZodError) {
         const validationError = fromZodError(error);
+        console.error("Validation error:", validationError.message);
+        
         return res.status(400).json({
           success: false,
           message: validationError.message,
@@ -41,6 +50,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(500).json({
         success: false,
         message: "Internal server error",
+        error: error instanceof Error ? error.message : String(error)
       });
     }
   });
