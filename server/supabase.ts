@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 // Get Supabase credentials from environment variables
 const rawUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
@@ -34,7 +34,7 @@ if (rawUrl && rawKey) {
 }
 
 // Initialize client only if we have valid credentials
-let supabase = null;
+let supabase: SupabaseClient | null = null;
 if (url && key) {
   try {
     console.log(`Creating Supabase client with URL: ${url.substring(0, 10)}...`);

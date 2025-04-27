@@ -1,3 +1,4 @@
+import { SupabaseClient } from '@supabase/supabase-js';
 import { supabase } from './supabase';
 import { 
   type User, type InsertUser,
@@ -62,23 +63,25 @@ class InMemoryFallback {
 export class SupabaseStorage implements IStorage {
   private fallback: InMemoryFallback;
   private useInMemoryFallback: boolean = false;
+  private supabaseClient: SupabaseClient | null = null;
   
   constructor() {
     this.fallback = new InMemoryFallback();
     // We'll determine if we need to use fallback storage during initialization
+    this.supabaseClient = supabase as SupabaseClient;
   }
   
   // Initialize database tables
   async initializeDatabase(): Promise<void> {
     try {
-      if (!supabase) {
+      if (!this.supabaseClient) {
         throw new Error("Supabase client not initialized");
       }
       
       // Check if tables exist
-      const { error: usersError } = await supabase.from('users').select('id').limit(1);
-      const { error: contactsError } = await supabase.from('contact_submissions').select('id').limit(1);
-      const { error: newslettersError } = await supabase.from('newsletters').select('id').limit(1);
+      const { error: usersError } = await this.supabaseClient.from('users').select('id').limit(1);
+      const { error: contactsError } = await this.supabaseClient.from('contact_submissions').select('id').limit(1);
+      const { error: newslettersError } = await this.supabaseClient.from('newsletters').select('id').limit(1);
       
       // If any tables don't exist, use in-memory fallback
       if (
@@ -307,7 +310,7 @@ export class SupabaseStorage implements IStorage {
       }
       
       // Convert snake_case to camelCase
-      return data.map(item => ({
+      return data.map((item: any) => ({
         ...item,
         kitchenSize: item.kitchen_size,
         createdAt: item.created_at
@@ -431,7 +434,7 @@ export class SupabaseStorage implements IStorage {
         throw error;
       }
       
-      return data.map(item => ({
+      return data.map((item: any) => ({
         ...item,
         createdAt: item.created_at
       })) as Newsletter[];
