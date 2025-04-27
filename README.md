@@ -14,16 +14,17 @@ A modern, responsive web application for M-Kite Kitchen that provides an immersi
 
 - **Frontend**: React with TypeScript, TailwindCSS, shadcn/ui components
 - **Backend**: Express.js server with REST API endpoints
-- **Database**: PostgreSQL (with fallback to in-memory storage when unavailable)
+- **Database**: Supabase & PostgreSQL (with fallback to in-memory storage when unavailable)
 - **State Management**: React Query for server state, React Hook Form for forms
-- **Deployment**: Configured for deployment on Render and Netlify
+- **Deployment**: Configured for deployment on Netlify
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js (v18+)
-- PostgreSQL database (optional, falls back to in-memory storage if unavailable)
+- Supabase account (recommended for production) or direct PostgreSQL database
+- Application will use in-memory fallback storage when no database connection is available
 
 ### Installation
 
@@ -33,9 +34,14 @@ A modern, responsive web application for M-Kite Kitchen that provides an immersi
    npm install
    ```
 3. Set up environment variables:
-   - Create a `.env` file with the following variables:
+   - Create a `.env.local` file with the following variables:
      ```
+     # For direct PostgreSQL connection
      DATABASE_URL=postgres://username:password@localhost:5432/dbname
+     
+     # For Supabase connection
+     VITE_SUPABASE_URL=https://your-project.supabase.co
+     VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
      ```
 4. Start the development server:
    ```
@@ -44,12 +50,18 @@ A modern, responsive web application for M-Kite Kitchen that provides an immersi
 
 ## Database Setup
 
-The application supports two storage options:
+The application supports three storage options:
 
-1. **PostgreSQL** (recommended for production): Set the `DATABASE_URL` environment variable
-2. **In-memory Storage** (for development): Used automatically when no `DATABASE_URL` is provided
+1. **Supabase** (recommended for production): Set the Supabase environment variables 
+2. **Direct PostgreSQL** (alternative): Set the `DATABASE_URL` environment variable
+3. **In-memory Storage** (for development): Used automatically as fallback when database tables don't exist
 
-To initialize the database tables:
+For Supabase setup:
+1. Create a Supabase project
+2. Set up tables using the SQL in `scripts/create-tables.sql`
+3. See [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md) for detailed instructions
+
+For direct PostgreSQL:
 ```
 npm run db:push
 ```
@@ -71,7 +83,12 @@ This project is configured for deployment on Netlify:
 The deployment includes:
 - Static hosting for the React frontend
 - Serverless Functions for the backend API
-- Configuration for connecting to an external PostgreSQL database
+- Integration with Supabase for database storage
+- Fallback mechanism for database connectivity issues
+
+When deploying to Netlify, you need to set the following environment variables:
+- `VITE_SUPABASE_URL`: Your Supabase project URL
+- `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key
 
 ## Data Migration
 
