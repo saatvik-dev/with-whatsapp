@@ -6,19 +6,51 @@ let supabase;
 
 function initializeDatabase() {
   try {
+    // Check first if we already have a connection
+    if (supabase) {
+      return true;
+    }
+    
+    // Check for environment variables
     if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) {
-      console.error('Supabase environment variables are not set');
+      console.error('Supabase environment variables are not set: ' + 
+                   (!process.env.VITE_SUPABASE_URL ? 'URL missing' : 'ANON_KEY missing'));
       return false;
     }
 
+    console.log('Initializing Supabase client...');
+    
+    // Create Supabase client
     supabase = createClient(
       process.env.VITE_SUPABASE_URL,
       process.env.VITE_SUPABASE_ANON_KEY
     );
     
+    if (!supabase) {
+      console.error('Failed to create Supabase client');
+      return false;
+    }
+    
+    console.log('Supabase client initialized successfully');
+    
+    // Test the connection asynchronously (doesn't block)
+    supabase.from('contact_submissions')
+      .select('count', { count: 'exact', head: true })
+      .then(result => {
+        if (result.error) {
+          console.error('Error testing Supabase connection:', result.error);
+        } else {
+          console.log('Supabase connection verified successfully');
+        }
+      })
+      .catch(err => {
+        console.error('Failed to test Supabase connection:', err);
+      });
+    
     return true;
   } catch (error) {
     console.error('Failed to initialize Supabase connection:', error);
+    console.error('Error details:', error.message);
     return false;
   }
 }
@@ -39,15 +71,17 @@ async function handleContactSubmission(body) {
     const { name, email, phone, message, kitchenSize, budget } = body;
     
     // Validate required fields
-    if (!name || !email || !message) {
+    if (!name || !email || !phone) {
       return {
         statusCode: 400,
         body: JSON.stringify({
           success: false,
-          message: 'Name, email, and message are required fields'
+          message: 'Name, email, and phone are required fields'
         })
       };
     }
+    
+    console.log("Processing contact form submission in Netlify function:", body);
 
     // Create new contact submission using Supabase
     const { data, error } = await supabase
