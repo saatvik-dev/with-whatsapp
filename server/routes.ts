@@ -152,7 +152,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         details: {
           contactCount: contacts.length,
           newsletterCount: newsletters.length,
-          dbType: process.env.VITE_SUPABASE_URL ? 'Supabase' : 'PostgreSQL'
+          dbType: process.env.DATABASE_URL ? 'NeonDB' : 'In-Memory'
         }
       });
     } catch (error: any) {

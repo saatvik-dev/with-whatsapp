@@ -114,8 +114,8 @@ export class MemStorage implements IStorage {
 
 // PostgreSQL storage implementation using Neon database
 export class PostgresStorage implements IStorage {
-  // Helper method to get the db instance - just returns the imported db
-  private async getDb() {
+  // No need for a getDb method as we use the imported db directly
+  private getDb() {
     return db;
   }
 
@@ -134,7 +134,7 @@ export class PostgresStorage implements IStorage {
   // User methods
   async getUser(id: number): Promise<User | undefined> {
     try {
-      const database = await this.getDb();
+      const database = this.getDb();
       const result = await database.select().from(users).where(eq(users.id, id));
       return result[0];
     } catch (error) {
@@ -145,7 +145,7 @@ export class PostgresStorage implements IStorage {
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     try {
-      const database = await this.getDb();
+      const database = this.getDb();
       const result = await database.select().from(users).where(eq(users.username, username));
       return result[0];
     } catch (error) {
@@ -156,7 +156,7 @@ export class PostgresStorage implements IStorage {
 
   async createUser(userData: InsertUser): Promise<User> {
     try {
-      const database = await this.getDb();
+      const database = this.getDb();
       const result = await database.insert(users).values(userData).returning();
       return result[0];
     } catch (error) {
@@ -168,7 +168,7 @@ export class PostgresStorage implements IStorage {
   // Contact methods
   async createContactSubmission(contactData: InsertContact): Promise<Contact> {
     try {
-      const database = await this.getDb();
+      const database = this.getDb();
       const result = await database.insert(contactSubmissions).values({
         ...contactData,
         createdAt: new Date()
@@ -182,7 +182,7 @@ export class PostgresStorage implements IStorage {
 
   async getAllContactSubmissions(): Promise<Contact[]> {
     try {
-      const database = await this.getDb();
+      const database = this.getDb();
       return await database.select().from(contactSubmissions).orderBy(contactSubmissions.createdAt);
     } catch (error) {
       console.error("Error getting all contact submissions:", error);
@@ -193,7 +193,7 @@ export class PostgresStorage implements IStorage {
   // Newsletter methods
   async subscribeToNewsletter(newsletterData: InsertNewsletter): Promise<Newsletter> {
     try {
-      const database = await this.getDb();
+      const database = this.getDb();
       const result = await database.insert(newsletters).values({
         ...newsletterData,
         createdAt: new Date()
@@ -207,7 +207,7 @@ export class PostgresStorage implements IStorage {
 
   async isEmailSubscribed(email: string): Promise<boolean> {
     try {
-      const database = await this.getDb();
+      const database = this.getDb();
       const result = await database.select().from(newsletters).where(eq(newsletters.email, email));
       return result.length > 0;
     } catch (error) {
@@ -218,7 +218,7 @@ export class PostgresStorage implements IStorage {
   
   async getAllNewsletterSubscriptions(): Promise<Newsletter[]> {
     try {
-      const database = await this.getDb();
+      const database = this.getDb();
       return await database.select().from(newsletters).orderBy(newsletters.createdAt);
     } catch (error) {
       console.error("Error getting all newsletter subscriptions:", error);
@@ -228,32 +228,15 @@ export class PostgresStorage implements IStorage {
 }
 
 // Choose which storage implementation to use
-// Check both Supabase credentials and DATABASE_URL
+// Check if we have NeonDB connection URL
 let storageImplementation: IStorage;
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
-
-// Function to detect if values might be swapped
-const mightBeSwapped = () => {
-  return (
-    supabaseUrl && 
-    supabaseKey && 
-    supabaseUrl.startsWith('ey') && 
-    supabaseKey.startsWith('http')
-  );
-};
-
-// Check if we have valid database credentials
-if ((supabaseUrl && supabaseKey && !mightBeSwapped()) || process.env.DATABASE_URL) {
-  console.log("Using PostgreSQL storage implementation");
+// Check if we have a valid database connection URL
+if (process.env.DATABASE_URL) {
+  console.log("Using NeonDB PostgreSQL storage implementation");
   storageImplementation = new PostgresStorage();
 } else {
-  if (mightBeSwapped()) {
-    console.warn("WARNING: Supabase credentials appear to be swapped, falling back to in-memory storage");
-  } else {
-    console.log("Using in-memory storage implementation");
-  }
+  console.log("No DATABASE_URL found, falling back to in-memory storage");
   storageImplementation = new MemStorage();
 }
 
