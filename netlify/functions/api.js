@@ -110,7 +110,11 @@ async function initializeDatabase() {
 // Contact form submission handler
 async function handleContactSubmission(body) {
   try {
+    console.log("Contact submission handler - START");
+    console.log("Body received:", JSON.stringify(body));
+    
     if (!supabase) {
+      console.error("Supabase client is not available");
       return {
         statusCode: 500,
         body: JSON.stringify({
@@ -120,21 +124,14 @@ async function handleContactSubmission(body) {
       };
     }
 
-    // Handle both camelCase and snake_case field names
-    const { 
-      name, 
-      email, 
-      phone, 
-      message, 
-      kitchenSize, kitchen_size, // Accept both formats
-      budget 
-    } = body;
-    
-    // Log all received fields for debugging
-    console.log("Contact form fields received:", JSON.stringify(body));
+    // Extract fields - keep it simple
+    const { name, email, phone } = body;
+    let kitchenSize = body.kitchenSize || body.kitchen_size;
+    let message = body.message;
     
     // Validate required fields
     if (!name || !email || !phone) {
+      console.error("Missing required fields");
       return {
         statusCode: 400,
         body: JSON.stringify({
@@ -144,36 +141,45 @@ async function handleContactSubmission(body) {
       };
     }
     
-    console.log("Processing contact form submission in Netlify function:", body);
-
-    // Use either kitchenSize or kitchen_size, preferring camelCase (from frontend)
-    const finalKitchenSize = kitchenSize || kitchen_size || null;
+    console.log("Contact form data validated successfully");
+    console.log("Inserting into contact_submissions table...");
     
-    // Create new contact submission using Supabase
-    const { data, error } = await supabase
-      .from('contact_submissions')
-      .insert([{
-        name,
-        email,
-        phone: phone || null,
-        message: message || null,
-        kitchen_size: finalKitchenSize,
-        budget: budget || null,
-        created_at: new Date().toISOString()
-      }])
-      .select();
-
-    if (error) {
-      console.error("Supabase insert error:", error);
-      throw error;
+    // Simplified insertion with minimal fields
+    const insertData = {
+      name,
+      email,
+      phone,
+      kitchen_size: kitchenSize || null,
+      message: message || null,
+      created_at: new Date().toISOString()
+    };
+    
+    console.log("Preparing to insert:", JSON.stringify(insertData));
+    
+    // Try to insert the data
+    let insertResult;
+    try {
+      insertResult = await supabase
+        .from('contact_submissions')
+        .insert([insertData]);
+      
+      if (insertResult.error) {
+        console.error("Supabase insert error:", insertResult.error);
+        throw insertResult.error;
+      }
+      
+      console.log("Insert successful, no error reported");
+    } catch (insertError) {
+      console.error("Insert operation failed:", insertError);
+      throw insertError;
     }
 
     return {
       statusCode: 200,
       body: JSON.stringify({
         success: true,
-        message: 'Contact form submission successful',
-        data: data[0] || { id: Date.now() } // Fallback ID if no result returned
+        message: 'Contact form submission successful', 
+        timestamp: new Date().toISOString()
       })
     };
   } catch (error) {
