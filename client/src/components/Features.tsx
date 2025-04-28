@@ -32,7 +32,7 @@ const Features = () => {
     <section id="features" className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <span className="text-blue-600 font-medium">REVOLUTIONARY DESIGN</span>
+          <span className="text-amber-600 font-medium">REVOLUTIONARY DESIGN</span>
           <h2 className="text-3xl md:text-4xl font-['Montserrat'] font-bold mt-2 mb-4">Why Choose M-Kite Kitchen?</h2>
           <p className="text-slate-600 max-w-2xl mx-auto">Discover the perfect blend of innovation, elegance, and efficiency that makes M-Kite the ultimate choice for modern kitchens.</p>
         </div>
@@ -43,8 +43,8 @@ const Features = () => {
               key={feature.id}
               className="bg-slate-50 rounded-xl p-8 hover:shadow-lg transition-all duration-300 group border border-slate-100"
             >
-              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-blue-100 transition-colors duration-300">
-                <span className="text-2xl text-blue-600">
+              <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-amber-100 transition-colors duration-300">
+                <span className="text-2xl text-amber-600">
                   {getIcon(feature.icon)}
                 </span>
               </div>
