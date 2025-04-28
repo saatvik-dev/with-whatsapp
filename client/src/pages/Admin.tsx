@@ -107,7 +107,7 @@ const Admin = () => {
               <CardContent>
                 {contactsLoading ? (
                   <div className="text-center py-8">
-                    <div className="animate-spin h-8 w-8 border-4 border-teal-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <div className="animate-spin h-8 w-8 border-4 border-amber-600 border-t-transparent rounded-full mx-auto mb-4"></div>
                     <p>Loading contact submissions...</p>
                   </div>
                 ) : contactsError ? (
@@ -179,7 +179,7 @@ const Admin = () => {
               <CardContent>
                 {newslettersLoading ? (
                   <div className="text-center py-8">
-                    <div className="animate-spin h-8 w-8 border-4 border-teal-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <div className="animate-spin h-8 w-8 border-4 border-amber-600 border-t-transparent rounded-full mx-auto mb-4"></div>
                     <p>Loading newsletter subscriptions...</p>
                   </div>
                 ) : newslettersError ? (

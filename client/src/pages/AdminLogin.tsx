@@ -77,10 +77,10 @@ const AdminLogin = () => {
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-6">
             <div className="flex items-center space-x-2">
-              <span className="text-teal-600 text-3xl"><IconCube size={28} /></span>
+              <span className="text-amber-600 text-3xl"><IconCube size={28} /></span>
               <h1 className="text-2xl font-['Montserrat'] font-bold tracking-tight">
                 <span className="text-slate-800">M-Kite</span>
-                <span className="text-teal-600">Kitchen</span>
+                <span className="text-amber-600">Kitchen</span>
               </h1>
             </div>
           </div>
@@ -129,7 +129,7 @@ const AdminLogin = () => {
               />
               <Button 
                 type="submit" 
-                className="w-full bg-teal-600 hover:bg-teal-700" 
+                className="w-full bg-amber-600 hover:bg-amber-700" 
                 disabled={isLoading}
               >
                 {isLoading ? "Logging in..." : "Log In"}
