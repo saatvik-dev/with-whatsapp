@@ -176,7 +176,7 @@ const Footer = () => {
                 />
                 <Button 
                   type="submit"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-r-lg transition-colors"
+                  className="bg-amber-600 hover:bg-amber-700 text-white px-4 rounded-r-lg transition-colors"
                   disabled={isSubmitting}
                 >
                   <IconSend size={18} />
@@ -185,7 +185,7 @@ const Footer = () => {
             </form>
             
             <p className="text-slate-400 text-sm">
-              By subscribing, you agree to our <Link href="/privacy-policy"><span className="text-blue-400 hover:underline cursor-pointer">Privacy Policy</span></Link> and consent to receive updates from our company.
+              By subscribing, you agree to our <Link href="/privacy-policy"><span className="text-amber-400 hover:underline cursor-pointer">Privacy Policy</span></Link> and consent to receive updates from our company.
             </p>
           </div>
         </div>
@@ -200,12 +200,12 @@ const Footer = () => {
               {footerLinks.map((link, index) => (
                 link.href.startsWith('/') ? (
                   <Link key={index} href={link.href}>
-                    <span className="text-slate-400 hover:text-blue-400 text-sm transition-colors cursor-pointer">
+                    <span className="text-slate-400 hover:text-amber-400 text-sm transition-colors cursor-pointer">
                       {link.label}
                     </span>
                   </Link>
                 ) : (
-                  <a key={index} href={link.href} className="text-slate-400 hover:text-blue-400 text-sm transition-colors">
+                  <a key={index} href={link.href} className="text-slate-400 hover:text-amber-400 text-sm transition-colors">
                     {link.label}
                   </a>
                 )

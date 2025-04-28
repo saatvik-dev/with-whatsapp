@@ -111,7 +111,7 @@ const Admin = () => {
                     <p>Loading contact submissions...</p>
                   </div>
                 ) : contactsError ? (
-                  <div className="text-center py-8 text-red-500">
+                  <div className="text-center py-8 text-amber-600">
                     <p>Error loading contact submissions. Please try again later.</p>
                   </div>
                 ) : contacts && contacts.length > 0 ? (
@@ -130,8 +130,8 @@ const Admin = () => {
                             </a>
                           </div>
                           <div className="flex items-center gap-2">
-                            <IconPhone className="text-teal-600" />
-                            <a href={`tel:${contact.phone}`} className="text-teal-600 hover:underline">
+                            <IconPhone className="text-amber-600" />
+                            <a href={`tel:${contact.phone}`} className="text-amber-600 hover:underline">
                               {contact.phone}
                             </a>
                           </div>
@@ -183,7 +183,7 @@ const Admin = () => {
                     <p>Loading newsletter subscriptions...</p>
                   </div>
                 ) : newslettersError ? (
-                  <div className="text-center py-8 text-red-500">
+                  <div className="text-center py-8 text-amber-600">
                     <p>Error loading newsletter subscriptions. Please try again later.</p>
                   </div>
                 ) : newsletters && newsletters.length > 0 ? (
@@ -199,7 +199,7 @@ const Admin = () => {
                         {newsletters.map((newsletter) => (
                           <tr key={newsletter.id} className="hover:bg-slate-50">
                             <td className="p-4">
-                              <a href={`mailto:${newsletter.email}`} className="text-teal-600 hover:underline">
+                              <a href={`mailto:${newsletter.email}`} className="text-amber-600 hover:underline">
                                 {newsletter.email}
                               </a>
                             </td>
