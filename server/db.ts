@@ -6,6 +6,9 @@ import * as schema from "@shared/schema";
 let supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 let supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
+console.log("Supabase URL:", supabaseUrl ? `${supabaseUrl.substring(0, 15)}...` : "Not found");
+console.log("Supabase Key:", supabaseKey ? `${supabaseKey.substring(0, 15)}...` : "Not found");
+
 // Function to detect if values might be swapped
 const mightBeSwapped = () => {
   return (
