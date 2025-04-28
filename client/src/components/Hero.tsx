@@ -3,7 +3,7 @@ import { IconCheck, IconArrowRight } from '@/lib/icons';
 
 const Hero = () => {
   return (
-    <section className="min-h-screen flex items-center pt-16 relative overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
+    <section className="min-h-screen flex items-center pt-24 md:pt-32 relative overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="absolute inset-0 z-0 opacity-10">
         <div className="absolute h-56 w-56 rounded-full bg-amber-300 top-20 left-10"></div>
         <div className="absolute h-64 w-64 rounded-full bg-amber-400 bottom-20 right-10"></div>
@@ -11,7 +11,7 @@ const Hero = () => {
         <div className="absolute h-20 w-20 rounded-full bg-slate-400 bottom-40 left-40"></div>
       </div>
       
-      <div className="container mx-auto px-4 py-20 md:py-32 z-10 relative">
+      <div className="container mx-auto px-4 py-16 md:py-24 z-10 relative">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="w-full md:w-1/2">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-['Montserrat'] font-bold leading-tight mb-6">
