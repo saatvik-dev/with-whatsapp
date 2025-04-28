@@ -34,7 +34,8 @@ export const isNetlifyDeployment = (): boolean => {
   );
 };
 
-// Determine if we should use Supabase (on Netlify) or direct API (local development)
+// Determine if we should use Supabase
 export const useSupabaseBackend = (): boolean => {
-  return hasSupabaseCredentials() && isNetlifyDeployment();
+  // Force using Supabase if credentials are available, regardless of whether we're on Netlify
+  return hasSupabaseCredentials();
 };

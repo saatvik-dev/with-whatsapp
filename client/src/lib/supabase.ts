@@ -34,13 +34,12 @@ if (mightBeSwapped()) {
   console.warn("VITE_SUPABASE_URL should be a URL (https://...) and VITE_SUPABASE_ANON_KEY should be a token");
   console.log('Using local development environment with direct database connection');
 } 
-// Only create the client if we have valid credentials AND we're in a Netlify environment
-// OR if we explicitly need to use Supabase locally for testing
+// Create the client if we have valid credentials
 else if (supabaseUrl && supabaseKey && isValidUrl(supabaseUrl)) {
   try {
     // Create a single supabase client for interacting with your database
     supabaseClient = createClient(supabaseUrl, supabaseKey);
-    console.log('Supabase client initialized successfully');
+    console.log('Supabase client initialized successfully with URL:', supabaseUrl);
   } catch (error) {
     console.error('Failed to initialize Supabase client:', error);
   }
