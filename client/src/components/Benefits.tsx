@@ -24,7 +24,7 @@ const Benefits = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-16">
           <div className="w-full lg:w-1/2 order-2 lg:order-1">
-            <span className="text-green-600 font-medium">LIFETIME PERFORMANCE</span>
+            <span className="text-blue-600 font-medium">LIFETIME PERFORMANCE</span>
             <h2 className="text-3xl md:text-4xl font-['Montserrat'] font-bold mt-2 mb-6">
               Revolutionary Materials for Extraordinary Kitchens
             </h2>
@@ -32,7 +32,7 @@ const Benefits = () => {
             <div className="space-y-6">
               {benefits.map((benefit) => (
                 <div key={benefit.id} className="flex items-start">
-                  <div className="mt-1 bg-green-100 rounded-full p-2 mr-4">
+                  <div className="mt-1 bg-blue-100 rounded-full p-2 mr-4">
                     {getIcon(benefit.icon)}
                   </div>
                   <div>
@@ -44,7 +44,7 @@ const Benefits = () => {
             </div>
             
             <div className="mt-10">
-              <a href="#contact" className="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors shadow-md">
+              <a href="#contact" className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md">
                 Learn More About M-Kite
                 <IconArrowRight className="ml-2" />
               </a>
@@ -54,7 +54,7 @@ const Benefits = () => {
           <div className="w-full lg:w-1/2 order-1 lg:order-2">
             <div className="relative">
               <div className="absolute inset-0 bg-slate-900 rounded-xl opacity-5 transform rotate-3"></div>
-              <div className="absolute inset-0 bg-green-500 rounded-xl opacity-5 transform -rotate-3"></div>
+              <div className="absolute inset-0 bg-blue-500 rounded-xl opacity-5 transform -rotate-3"></div>
               <img 
                 src="https://images.unsplash.com/photo-1604709177225-055f99402ea3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
                 alt="M-Kite Aluminum Kitchen Benefits" 
@@ -63,8 +63,8 @@ const Benefits = () => {
               
               <div className="absolute -bottom-10 -left-10 bg-white p-6 rounded-xl shadow-xl max-w-xs hidden md:block">
                 <div className="flex items-center space-x-4 mb-3">
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                    <IconWater className="text-green-600" />
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <IconWater className="text-blue-600" />
                   </div>
                   <h4 className="font-['Montserrat'] font-bold">Lifetime Performance</h4>
                 </div>
