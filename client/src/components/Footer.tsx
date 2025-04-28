@@ -1,10 +1,12 @@
-import { IconCube, IconMapPin, IconPhone, IconMail, IconClock, IconSend } from '@/lib/icons';
+import { IconMapPin, IconPhone, IconMail, IconClock, IconSend } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { quickLinks, socialLinks, footerLinks } from '@/constants/data';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'wouter';
+import { IconFacebook, IconTwitter, IconInstagram, IconLinkedin } from '@/lib/icons';
+import logoImg from '../assets/m-kitelogo.png';
 
 const getSocialIcon = (iconName: string) => {
   switch (iconName) {
@@ -20,8 +22,6 @@ const getSocialIcon = (iconName: string) => {
       return null;
   }
 };
-
-import { IconFacebook, IconTwitter, IconInstagram, IconLinkedin } from '@/lib/icons';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
@@ -100,10 +100,10 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
             <div className="flex items-center space-x-2 mb-6">
-              <span className="text-teal-400 text-3xl"><IconCube size={28} /></span>
+              <img src={logoImg} alt="M-Kite Logo" className="h-10 w-auto" />
               <h1 className="text-2xl font-['Montserrat'] font-bold tracking-tight">
                 <span className="text-white">M-Kite</span>
-                <span className="text-teal-400">Kitchen</span>
+                <span className="text-blue-400">Kitchen</span>
               </h1>
             </div>
             
