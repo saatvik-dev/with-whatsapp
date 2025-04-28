@@ -69,28 +69,33 @@ const Contact = () => {
     console.log("Submitting form data:", data);
     
     try {
-      // Explicitly log the URL we're posting to for troubleshooting
-      const url = '/api/contact';
+      // Use the proper URL format for both Netlify and local development
+      // Netlify functions will be at /.netlify/functions/api/contact
+      const url = window.location.hostname.includes('netlify') 
+        ? '/.netlify/functions/api/contact' 
+        : '/api/contact';
+      
       console.log("Submitting to:", url);
       
-      // Format the data for the API - ensuring consistent field names for Netlify functions
-      const formattedData = {
+      // Create the simplest possible payload for Netlify functions
+      // Only include the essential fields to reduce chance of errors
+      const simpleData = {
         name: data.name,
         email: data.email,
         phone: data.phone,
-        kitchenSize: data.kitchenSize, // Keep camelCase for frontend
-        kitchen_size: data.kitchenSize, // Add snake_case for backend compatibility
-        message: data.message
+        kitchen_size: data.kitchenSize, // Only use snake_case format for consistency
+        message: data.message ? data.message : ''
       };
       
-      console.log("Formatted data for API:", formattedData);
+      console.log("Simple data for API:", simpleData);
       
+      // Use the same format as the newsletter submission which works
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formattedData),
+        body: JSON.stringify(simpleData),
       });
       
       console.log("Response status:", response.status);

@@ -44,9 +44,13 @@ const Footer = () => {
     console.log("Submitting newsletter subscription for:", email);
     
     try {
-      // Explicitly log the URL for troubleshooting
-      const url = '/api/subscribe';
-      console.log("Submitting to:", url);
+      // Use the proper URL format for both Netlify and local development
+      // Netlify functions will be at /.netlify/functions/api/subscribe
+      const url = window.location.hostname.includes('netlify') 
+        ? '/.netlify/functions/api/subscribe' 
+        : '/api/subscribe';
+        
+      console.log("Submitting newsletter to:", url);
       
       const response = await fetch(url, {
         method: 'POST',
