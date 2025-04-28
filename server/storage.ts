@@ -4,10 +4,11 @@ import {
   newsletters, type Newsletter, type InsertNewsletter
 } from "@shared/schema";
 import { eq } from 'drizzle-orm';
-import { db } from './db';
+import { db, supabaseClient } from './db';
 // Import SupabaseStorage implementation
 import { SupabaseStorage } from './supabase-storage';
 import { supabase } from './supabase';
+import { NeonDatabase } from 'drizzle-orm/neon-serverless';
 
 // Storage interface with CRUD methods
 export interface IStorage {
@@ -118,7 +119,10 @@ export class MemStorage implements IStorage {
 // PostgreSQL storage implementation using Neon database
 export class PostgresStorage implements IStorage {
   // Helper method to get the db instance - just returns the imported db
-  private async getDb() {
+  private async getDb(): Promise<NeonDatabase<typeof schema>> {
+    if (!db) {
+      throw new Error('Database connection not initialized');
+    }
     return db;
   }
 
