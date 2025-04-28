@@ -1,4 +1,4 @@
-import { SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseClient, createClient } from '@supabase/supabase-js';
 import { supabase } from './supabase';
 import { 
   type User, type InsertUser,
@@ -6,6 +6,13 @@ import {
   type Newsletter, type InsertNewsletter
 } from "@shared/schema";
 import { IStorage } from './storage';
+
+// Hardcoded Supabase credentials for direct access
+const SUPABASE_URL = 'https://jjwbqqtehbvbenyligow.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impqd2JxcXRlaGJ2YmVueWxpZ293Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4NjMwMDYsImV4cCI6MjA2MTQzOTAwNn0.fXlexhnkJ64Fbt9oFqR8QlJCDMAitZRpBbDGxESIv94';
+
+// Create direct client
+const directClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Fallback in-memory storage for development when tables don't exist
 class InMemoryFallback {
@@ -67,8 +74,9 @@ export class SupabaseStorage implements IStorage {
   
   constructor() {
     this.fallback = new InMemoryFallback();
-    // We'll determine if we need to use fallback storage during initialization
-    this.supabaseClient = supabase as SupabaseClient;
+    // Use the direct client with hardcoded credentials
+    this.supabaseClient = directClient;
+    console.log("Using direct Supabase client with hardcoded credentials");
   }
   
   // Initialize database tables
@@ -114,9 +122,9 @@ export class SupabaseStorage implements IStorage {
     }
     
     try {
-      if (!supabase) throw new Error("Supabase client not initialized");
+      if (!this.supabaseClient) throw new Error("Supabase client not initialized");
       
-      const { data, error } = await supabase
+      const { data, error } = await this.supabaseClient
         .from('users')
         .select('*')
         .eq('id', id)
@@ -150,9 +158,9 @@ export class SupabaseStorage implements IStorage {
     }
     
     try {
-      if (!supabase) throw new Error("Supabase client not initialized");
+      if (!this.supabaseClient) throw new Error("Supabase client not initialized");
       
-      const { data, error } = await supabase
+      const { data, error } = await this.supabaseClient
         .from('users')
         .select('*')
         .eq('username', username)
@@ -180,7 +188,7 @@ export class SupabaseStorage implements IStorage {
   async createUser(userData: InsertUser): Promise<User> {
     try {
       // If using fallback, use in-memory storage
-      if (this.useInMemoryFallback || !supabase) {
+      if (this.useInMemoryFallback || !this.supabaseClient) {
         console.log("Using in-memory fallback for creating user");
         const user: User = {
           id: 1, // Will be updated by addUser
@@ -189,7 +197,7 @@ export class SupabaseStorage implements IStorage {
         return this.fallback.addUser(user);
       }
       
-      const { data, error } = await supabase
+      const { data, error } = await this.supabaseClient
         .from('users')
         .insert(userData)
         .select()
@@ -223,7 +231,7 @@ export class SupabaseStorage implements IStorage {
   async createContactSubmission(contactData: InsertContact): Promise<Contact> {
     try {
       // If using fallback or the tables don't exist, use in-memory storage
-      if (this.useInMemoryFallback || !supabase) {
+      if (this.useInMemoryFallback || !this.supabaseClient) {
         console.log("Using in-memory fallback for contact submission");
         const now = new Date();
         const contact: Contact = {
@@ -248,7 +256,7 @@ export class SupabaseStorage implements IStorage {
       // Remove kitchenSize as we're using snake_case in the database
       delete (dataWithTimestamp as any).kitchenSize;
       
-      const { data, error } = await supabase
+      const { data, error } = await this.supabaseClient
         .from('contact_submissions')
         .insert(dataWithTimestamp)
         .select()
@@ -292,9 +300,9 @@ export class SupabaseStorage implements IStorage {
     }
     
     try {
-      if (!supabase) throw new Error("Supabase client not initialized");
+      if (!this.supabaseClient) throw new Error("Supabase client not initialized");
       
-      const { data, error } = await supabase
+      const { data, error } = await this.supabaseClient
         .from('contact_submissions')
         .select('*')
         .order('created_at', { ascending: false });
@@ -327,7 +335,7 @@ export class SupabaseStorage implements IStorage {
   async subscribeToNewsletter(newsletterData: InsertNewsletter): Promise<Newsletter> {
     try {
       // If using fallback, use in-memory storage
-      if (this.useInMemoryFallback || !supabase) {
+      if (this.useInMemoryFallback || !this.supabaseClient) {
         console.log("Using in-memory fallback for newsletter subscription");
         const now = new Date();
         const newsletter: Newsletter = {
@@ -338,7 +346,7 @@ export class SupabaseStorage implements IStorage {
         return this.fallback.addNewsletter(newsletter);
       }
       
-      const { data, error } = await supabase
+      const { data, error } = await this.supabaseClient
         .from('newsletters')
         .insert({
           ...newsletterData,
@@ -383,9 +391,9 @@ export class SupabaseStorage implements IStorage {
     }
     
     try {
-      if (!supabase) throw new Error("Supabase client not initialized");
+      if (!this.supabaseClient) throw new Error("Supabase client not initialized");
       
-      const { data, error } = await supabase
+      const { data, error } = await this.supabaseClient
         .from('newsletters')
         .select('id')
         .eq('email', email);
