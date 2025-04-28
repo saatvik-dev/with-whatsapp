@@ -3,7 +3,7 @@ import { IconCheck, IconArrowRight } from '@/lib/icons';
 
 const Hero = () => {
   return (
-    <section className="min-h-screen flex items-center pt-24 md:pt-32 relative overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
+    <section className="min-h-screen flex items-center pt-28 md:pt-36 relative overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="absolute inset-0 z-0 opacity-10">
         <div className="absolute h-56 w-56 rounded-full bg-amber-300 top-20 left-10"></div>
         <div className="absolute h-64 w-64 rounded-full bg-amber-400 bottom-20 right-10"></div>

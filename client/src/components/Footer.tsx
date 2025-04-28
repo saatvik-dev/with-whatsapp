@@ -99,18 +99,18 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
-            <div className="flex items-center space-x-2 md:space-x-3 mb-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start lg:items-center gap-4 mb-6 w-full max-w-lg">
               <img 
                 src={logoImg} 
                 alt="M-Kite Logo" 
-                className="h-[60px] sm:h-[70px] md:h-[80px] lg:h-[100px] w-auto transition-all" 
+                className="h-[80px] sm:h-[85px] md:h-[90px] lg:h-[100px] w-auto transition-all" 
               />
               <div className="flex flex-col">
-                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-[32px] font-['Montserrat'] font-bold tracking-tight whitespace-nowrap">
+                <h1 className="text-2xl sm:text-2xl md:text-3xl lg:text-[32px] font-['Montserrat'] font-bold tracking-tight whitespace-nowrap text-center sm:text-left">
                   <span className="text-white">M-Kite</span>
-                  <span className="text-amber-400">Kitchen</span>
+                  <span className="text-amber-400"> Kitchen</span>
                 </h1>
-                <span className="text-[8px] sm:text-[9px] md:text-[10px] text-amber-400 font-medium mt-0.5 leading-tight">
+                <span className="text-[9px] sm:text-[9px] md:text-[10px] text-amber-400 font-medium mt-0.5 leading-tight text-center sm:text-left">
                   Aluminum Premium Modular Kitchen Cabinets
                 </span>
               </div>
