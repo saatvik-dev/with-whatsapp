@@ -215,7 +215,7 @@ const Contact = () => {
                             <Input 
                               placeholder="+91 XXXXX XXXXX" 
                               type="tel"
-                              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-100"
                               {...field} 
                             />
                           </FormControl>
@@ -260,7 +260,7 @@ const Contact = () => {
                         <FormControl>
                           <Textarea 
                             placeholder="Tell us about your requirements..." 
-                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-100"
                             rows={4}
                             {...field} 
                           />
@@ -272,7 +272,7 @@ const Contact = () => {
                   
                   <Button 
                     type="submit" 
-                    className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md"
+                    className="w-full px-6 py-3 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition-colors shadow-md"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? 'Submitting...' : 'Submit Inquiry'}

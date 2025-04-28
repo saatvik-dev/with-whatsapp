@@ -39,7 +39,7 @@ const Navbar = () => {
           <img src={logoImg} alt="M-Kite Logo" className="h-10 w-auto" />
           <h1 className="text-2xl font-['Montserrat'] font-bold tracking-tight">
             <span className="text-slate-800">M-Kite</span>
-            <span className="text-blue-600"> Kitchen</span>
+            <span className="text-amber-600"> Kitchen</span>
           </h1>
         </a>
         
@@ -49,7 +49,7 @@ const Navbar = () => {
             <a 
               key={link.href}
               href={link.href} 
-              className="font-medium text-slate-600 hover:text-blue-600 transition-colors"
+              className="font-medium text-slate-600 hover:text-amber-600 transition-colors"
             >
               {link.label}
             </a>
@@ -59,12 +59,12 @@ const Navbar = () => {
         <div className="flex items-center space-x-4">
           <a 
             href="#contact" 
-            className="hidden md:inline-flex px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
+            className="hidden md:inline-flex px-4 py-2 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition-colors shadow-sm"
           >
             Get Started
           </a>
           <button 
-            className="md:hidden text-slate-800 hover:text-blue-600 transition-colors"
+            className="md:hidden text-slate-800 hover:text-amber-600 transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle mobile menu"
           >
@@ -80,7 +80,7 @@ const Navbar = () => {
             <a 
               key={link.href}
               href={link.href} 
-              className="py-2 font-medium text-slate-600 hover:text-blue-600 transition-colors"
+              className="py-2 font-medium text-slate-600 hover:text-amber-600 transition-colors"
               onClick={handleClickLink}
             >
               {link.label}
@@ -88,7 +88,7 @@ const Navbar = () => {
           ))}
           <a 
             href="#contact" 
-            className="py-2 font-medium text-blue-600 hover:text-blue-700 transition-colors"
+            className="py-2 font-medium text-amber-600 hover:text-amber-700 transition-colors"
             onClick={handleClickLink}
           >
             Contact Us
