@@ -20,7 +20,7 @@ const Comparison = () => {
     <section id="comparison" className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <span className="text-blue-600 font-medium">SEE THE DIFFERENCE</span>
+          <span className="text-amber-600 font-medium">SEE THE DIFFERENCE</span>
           <h2 className="text-3xl md:text-4xl font-['Montserrat'] font-bold mt-2 mb-4">M-Kite vs Traditional Kitchens</h2>
           <p className="text-slate-600 max-w-2xl mx-auto">Discover why our aluminum innovation outperforms conventional kitchen materials in every aspect.</p>
         </div>
@@ -30,7 +30,7 @@ const Comparison = () => {
             <thead>
               <tr>
                 <th className="p-4 text-left bg-slate-50 border-b-2 border-slate-100"></th>
-                <th className="p-4 text-center bg-blue-50 border-b-2 border-blue-100 rounded-tl-lg">
+                <th className="p-4 text-center bg-amber-50 border-b-2 border-amber-100 rounded-tl-lg">
                   <div className="flex flex-col items-center">
                     <img src={logoImg} alt="M-Kite Logo" className="h-8 w-auto mb-2" />
                     <span className="font-['Montserrat'] font-bold text-lg">M-Kite Aluminum</span>
@@ -71,7 +71,7 @@ const Comparison = () => {
                   className={index < comparisonRows.length - 1 ? 'border-b border-slate-100' : ''}
                 >
                   <td className="p-4 font-medium">{row.feature}</td>
-                  <td className={`p-4 text-center bg-blue-50 ${index === comparisonRows.length - 1 ? 'rounded-bl-lg' : ''}`}>
+                  <td className={`p-4 text-center bg-amber-50 ${index === comparisonRows.length - 1 ? 'rounded-bl-lg' : ''}`}>
                     {getStatusIcon(row.mkite.status)}
                     <span className="ml-2">{row.mkite.text}</span>
                   </td>
@@ -90,7 +90,7 @@ const Comparison = () => {
         </div>
         
         <div className="mt-12 flex justify-center">
-          <a href="#contact" className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md">
+          <a href="#contact" className="inline-flex items-center px-6 py-3 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition-colors shadow-md">
             Choose The Best For Your Home
             <IconArrowRight className="ml-2" />
           </a>

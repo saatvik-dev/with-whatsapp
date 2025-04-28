@@ -5,7 +5,7 @@ const Testimonials = () => {
     <section id="testimonials" className="py-20 bg-slate-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <span className="text-teal-600 font-medium">CUSTOMER STORIES</span>
+          <span className="text-amber-600 font-medium">CUSTOMER STORIES</span>
           <h2 className="text-3xl md:text-4xl font-['Montserrat'] font-bold mt-2 mb-4">What Our Clients Say</h2>
           <p className="text-slate-600 max-w-2xl mx-auto">Hear from homeowners who have transformed their kitchens with our revolutionary aluminum solution.</p>
         </div>
@@ -16,7 +16,7 @@ const Testimonials = () => {
               key={testimonial.id}
               className="bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition-all duration-300 relative"
             >
-              <div className="text-teal-300 absolute -top-4 -left-2 text-6xl opacity-20">"</div>
+              <div className="text-amber-300 absolute -top-4 -left-2 text-6xl opacity-20">"</div>
               <div className="relative">
                 <div className="flex mb-4">
                   {[...Array(5)].map((_, i) => (

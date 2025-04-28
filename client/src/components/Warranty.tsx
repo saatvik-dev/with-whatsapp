@@ -3,10 +3,10 @@ import { IconInfinity, IconArrowRight } from '@/lib/icons';
 
 const Warranty = () => {
   return (
-    <section className="py-20 bg-gradient-to-r from-green-900 to-slate-900 text-white">
+    <section className="py-20 bg-gradient-to-r from-amber-900 to-slate-900 text-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <span className="text-green-300 font-medium">UNMATCHED CONFIDENCE</span>
+          <span className="text-amber-300 font-medium">UNMATCHED CONFIDENCE</span>
           <h2 className="text-3xl md:text-4xl font-['Montserrat'] font-bold mt-2 mb-4">Our Industry-Leading Guarantee</h2>
           <p className="text-slate-100 max-w-2xl mx-auto">We stand behind the quality of our products with warranties that far exceed industry standards.</p>
         </div>
