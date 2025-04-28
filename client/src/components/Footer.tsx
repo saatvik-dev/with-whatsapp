@@ -116,7 +116,7 @@ const Footer = () => {
                 <a 
                   key={index}
                   href={link.href} 
-                  className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:bg-teal-800 hover:text-white transition-colors"
+                  className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:bg-blue-800 hover:text-white transition-colors"
                   aria-label={`Follow us on ${link.icon}`}
                 >
                   {getSocialIcon(link.icon)}
@@ -130,7 +130,7 @@ const Footer = () => {
             <ul className="space-y-3">
               {quickLinks.map((link, index) => (
                 <li key={index}>
-                  <a href={link.href} className="text-slate-300 hover:text-teal-400 transition-colors">
+                  <a href={link.href} className="text-slate-300 hover:text-blue-400 transition-colors">
                     {link.label}
                   </a>
                 </li>
@@ -142,19 +142,19 @@ const Footer = () => {
             <h3 className="text-lg font-['Montserrat'] font-bold mb-6">Contact Us</h3>
             <ul className="space-y-4">
               <li className="flex items-start">
-                <IconMapPin className="text-teal-400 mt-1 mr-3" />
+                <IconMapPin className="text-blue-400 mt-1 mr-3" />
                 <span className="text-slate-300">123 Innovation Street, Design District, Mumbai, India - 400001</span>
               </li>
               <li className="flex items-center">
-                <IconPhone className="text-teal-400 mr-3" />
+                <IconPhone className="text-blue-400 mr-3" />
                 <span className="text-slate-300">+91 98765 43210</span>
               </li>
               <li className="flex items-center">
-                <IconMail className="text-teal-400 mr-3" />
+                <IconMail className="text-blue-400 mr-3" />
                 <span className="text-slate-300">info@mkitekitchen.com</span>
               </li>
               <li className="flex items-center">
-                <IconClock className="text-teal-400 mr-3" />
+                <IconClock className="text-blue-400 mr-3" />
                 <span className="text-slate-300">Mon-Sat: 10:00 AM - 7:00 PM</span>
               </li>
             </ul>
@@ -176,7 +176,7 @@ const Footer = () => {
                 />
                 <Button 
                   type="submit"
-                  className="bg-teal-600 hover:bg-teal-700 text-white px-4 rounded-r-lg transition-colors"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-r-lg transition-colors"
                   disabled={isSubmitting}
                 >
                   <IconSend size={18} />
@@ -185,7 +185,7 @@ const Footer = () => {
             </form>
             
             <p className="text-slate-400 text-sm">
-              By subscribing, you agree to our <Link href="/privacy-policy"><span className="text-teal-400 hover:underline cursor-pointer">Privacy Policy</span></Link> and consent to receive updates from our company.
+              By subscribing, you agree to our <Link href="/privacy-policy"><span className="text-blue-400 hover:underline cursor-pointer">Privacy Policy</span></Link> and consent to receive updates from our company.
             </p>
           </div>
         </div>
@@ -200,12 +200,12 @@ const Footer = () => {
               {footerLinks.map((link, index) => (
                 link.href.startsWith('/') ? (
                   <Link key={index} href={link.href}>
-                    <span className="text-slate-400 hover:text-teal-400 text-sm transition-colors cursor-pointer">
+                    <span className="text-slate-400 hover:text-blue-400 text-sm transition-colors cursor-pointer">
                       {link.label}
                     </span>
                   </Link>
                 ) : (
-                  <a key={index} href={link.href} className="text-slate-400 hover:text-teal-400 text-sm transition-colors">
+                  <a key={index} href={link.href} className="text-slate-400 hover:text-blue-400 text-sm transition-colors">
                     {link.label}
                   </a>
                 )
