@@ -14,11 +14,11 @@ import { IconMapPin, IconPhone, IconMail, IconFacebook, IconTwitter, IconInstagr
 const getContactIcon = (iconName: string) => {
   switch (iconName) {
     case 'location':
-      return <IconMapPin className="text-teal-600" />;
+      return <IconMapPin className="text-green-600" />;
     case 'phone':
-      return <IconPhone className="text-teal-600" />;
+      return <IconPhone className="text-green-600" />;
     case 'email':
-      return <IconMail className="text-teal-600" />;
+      return <IconMail className="text-green-600" />;
     default:
       return null;
   }
@@ -124,7 +124,7 @@ const Contact = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row gap-16">
           <div className="w-full lg:w-1/2">
-            <span className="text-teal-600 font-medium">GET IN TOUCH</span>
+            <span className="text-green-600 font-medium">GET IN TOUCH</span>
             <h2 className="text-3xl md:text-4xl font-['Montserrat'] font-bold mt-2 mb-6">Transform Your Kitchen Today</h2>
             
             <p className="text-slate-600 leading-relaxed mb-8">
@@ -134,7 +134,7 @@ const Contact = () => {
             <div className="space-y-6 mb-8">
               {contactInfo.map(info => (
                 <div key={info.id} className="flex items-start">
-                  <div className="mt-1 bg-teal-100 rounded-full p-2 mr-4">
+                  <div className="mt-1 bg-green-100 rounded-full p-2 mr-4">
                     {getContactIcon(info.icon)}
                   </div>
                   <div>
@@ -150,7 +150,7 @@ const Contact = () => {
                 <a 
                   key={index}
                   href={link.href} 
-                  className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-teal-100 hover:text-teal-600 transition-colors"
+                  className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-green-100 hover:text-green-600 transition-colors"
                   aria-label={`Follow us on ${link.icon}`}
                 >
                   {getSocialIcon(link.icon)}
@@ -175,7 +175,7 @@ const Contact = () => {
                           <FormControl>
                             <Input 
                               placeholder="Your Name" 
-                              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-400 focus:ring-2 focus:ring-teal-100"
+                              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100"
                               {...field} 
                             />
                           </FormControl>
@@ -194,7 +194,7 @@ const Contact = () => {
                             <Input 
                               placeholder="your@email.com" 
                               type="email"
-                              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-400 focus:ring-2 focus:ring-teal-100"
+                              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100"
                               {...field} 
                             />
                           </FormControl>
@@ -215,7 +215,7 @@ const Contact = () => {
                             <Input 
                               placeholder="+91 XXXXX XXXXX" 
                               type="tel"
-                              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-400 focus:ring-2 focus:ring-teal-100"
+                              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100"
                               {...field} 
                             />
                           </FormControl>
@@ -260,7 +260,7 @@ const Contact = () => {
                         <FormControl>
                           <Textarea 
                             placeholder="Tell us about your requirements..." 
-                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-400 focus:ring-2 focus:ring-teal-100"
+                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-green-400 focus:ring-2 focus:ring-green-100"
                             rows={4}
                             {...field} 
                           />
