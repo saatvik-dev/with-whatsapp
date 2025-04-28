@@ -124,8 +124,8 @@ const Admin = () => {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                           <div className="flex items-center gap-2">
-                            <IconMail className="text-teal-600" />
-                            <a href={`mailto:${contact.email}`} className="text-teal-600 hover:underline">
+                            <IconMail className="text-amber-600" />
+                            <a href={`mailto:${contact.email}`} className="text-amber-600 hover:underline">
                               {contact.email}
                             </a>
                           </div>

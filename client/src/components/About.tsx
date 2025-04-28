@@ -6,7 +6,7 @@ const About = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-16">
           <div className="w-full lg:w-1/2 order-2 lg:order-1">
-            <span className="text-teal-600 font-medium">OUR JOURNEY</span>
+            <span className="text-amber-600 font-medium">OUR JOURNEY</span>
             <h2 className="text-3xl md:text-4xl font-['Montserrat'] font-bold mt-2 mb-6">
               25+ Years of Industry Excellence
             </h2>
@@ -24,7 +24,7 @@ const About = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href="#features" className="px-6 py-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition-colors shadow-md text-center">
+              <a href="#features" className="px-6 py-3 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition-colors shadow-md text-center">
                 Discover Our Innovation
               </a>
               <a href="#contact" className="px-6 py-3 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-100 transition-colors text-center">
@@ -44,11 +44,11 @@ const About = () => {
               <div className="absolute -bottom-10 -right-10 bg-white p-6 rounded-xl shadow-xl max-w-xs hidden md:block">
                 <div className="flex items-center mb-3">
                   <div className="mr-4">
-                    <div className="text-3xl font-['Montserrat'] font-bold text-teal-600">25+</div>
+                    <div className="text-3xl font-['Montserrat'] font-bold text-amber-600">25+</div>
                     <div className="text-slate-600 text-sm">Years of Excellence</div>
                   </div>
                   <div>
-                    <div className="text-3xl font-['Montserrat'] font-bold text-teal-600">5000+</div>
+                    <div className="text-3xl font-['Montserrat'] font-bold text-amber-600">5000+</div>
                     <div className="text-slate-600 text-sm">Kitchens Installed</div>
                   </div>
                 </div>

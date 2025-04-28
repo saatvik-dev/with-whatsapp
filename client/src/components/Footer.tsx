@@ -103,7 +103,7 @@ const Footer = () => {
               <img src={logoImg} alt="M-Kite Logo" className="h-10 w-auto" />
               <h1 className="text-2xl font-['Montserrat'] font-bold tracking-tight">
                 <span className="text-white">M-Kite</span>
-                <span className="text-blue-400">Kitchen</span>
+                <span className="text-amber-400">Kitchen</span>
               </h1>
             </div>
             
@@ -116,7 +116,7 @@ const Footer = () => {
                 <a 
                   key={index}
                   href={link.href} 
-                  className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:bg-blue-800 hover:text-white transition-colors"
+                  className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:bg-amber-600 hover:text-white transition-colors"
                   aria-label={`Follow us on ${link.icon}`}
                 >
                   {getSocialIcon(link.icon)}
@@ -130,7 +130,7 @@ const Footer = () => {
             <ul className="space-y-3">
               {quickLinks.map((link, index) => (
                 <li key={index}>
-                  <a href={link.href} className="text-slate-300 hover:text-blue-400 transition-colors">
+                  <a href={link.href} className="text-slate-300 hover:text-amber-400 transition-colors">
                     {link.label}
                   </a>
                 </li>
@@ -142,19 +142,19 @@ const Footer = () => {
             <h3 className="text-lg font-['Montserrat'] font-bold mb-6">Contact Us</h3>
             <ul className="space-y-4">
               <li className="flex items-start">
-                <IconMapPin className="text-blue-400 mt-1 mr-3" />
+                <IconMapPin className="text-amber-400 mt-1 mr-3" />
                 <span className="text-slate-300">123 Innovation Street, Design District, Mumbai, India - 400001</span>
               </li>
               <li className="flex items-center">
-                <IconPhone className="text-blue-400 mr-3" />
+                <IconPhone className="text-amber-400 mr-3" />
                 <span className="text-slate-300">+91 98765 43210</span>
               </li>
               <li className="flex items-center">
-                <IconMail className="text-blue-400 mr-3" />
+                <IconMail className="text-amber-400 mr-3" />
                 <span className="text-slate-300">info@mkitekitchen.com</span>
               </li>
               <li className="flex items-center">
-                <IconClock className="text-blue-400 mr-3" />
+                <IconClock className="text-amber-400 mr-3" />
                 <span className="text-slate-300">Mon-Sat: 10:00 AM - 7:00 PM</span>
               </li>
             </ul>
