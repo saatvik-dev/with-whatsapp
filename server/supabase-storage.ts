@@ -1,18 +1,11 @@
 import { SupabaseClient, createClient } from '@supabase/supabase-js';
-import { supabase } from './supabase';
+import { supabaseClient } from './db';
 import { 
   type User, type InsertUser,
   type Contact, type InsertContact,
   type Newsletter, type InsertNewsletter
 } from "@shared/schema";
 import { IStorage } from './storage';
-
-// Hardcoded Supabase credentials for direct access
-const SUPABASE_URL = 'https://jjwbqqtehbvbenyligow.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impqd2JxcXRlaGJ2YmVueWxpZ293Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4NjMwMDYsImV4cCI6MjA2MTQzOTAwNn0.fXlexhnkJ64Fbt9oFqR8QlJCDMAitZRpBbDGxESIv94';
-
-// Create direct client
-const directClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Fallback in-memory storage for development when tables don't exist
 class InMemoryFallback {
@@ -74,9 +67,9 @@ export class SupabaseStorage implements IStorage {
   
   constructor() {
     this.fallback = new InMemoryFallback();
-    // Use the direct client with hardcoded credentials
-    this.supabaseClient = directClient;
-    console.log("Using direct Supabase client with hardcoded credentials");
+    // Use the supabaseClient from db.ts 
+    this.supabaseClient = supabaseClient;
+    console.log("Using Supabase client from environment variables");
   }
   
   // Initialize database tables
@@ -425,9 +418,9 @@ export class SupabaseStorage implements IStorage {
     }
     
     try {
-      if (!supabase) throw new Error("Supabase client not initialized");
+      if (!this.supabaseClient) throw new Error("Supabase client not initialized");
       
-      const { data, error } = await supabase
+      const { data, error } = await this.supabaseClient
         .from('newsletters')
         .select('*')
         .order('created_at', { ascending: false });

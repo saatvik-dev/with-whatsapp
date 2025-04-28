@@ -236,22 +236,22 @@ export class PostgresStorage implements IStorage {
 }
 
 // Choose which storage implementation to use
-// Check DATABASE_URL first, then Supabase credentials
+// Prioritize Supabase over direct PostgreSQL
 let storageImplementation: IStorage;
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 const databaseUrl = process.env.DATABASE_URL;
 
-// First check if we have a PostgreSQL connection available
-if (databaseUrl) {
-  console.log("Using PostgreSQL storage implementation with DATABASE_URL");
-  storageImplementation = new PostgresStorage();
-}
-// If no PostgreSQL, check if we have Supabase credentials
-else if (supabaseUrl && supabaseKey) {
+// First check if we have Supabase credentials available
+if (supabaseUrl && supabaseKey) {
   console.log("Using Supabase storage implementation");
   storageImplementation = new SupabaseStorage();
+}
+// If no Supabase, check if we have a PostgreSQL connection
+else if (databaseUrl) {
+  console.log("Using PostgreSQL storage implementation with DATABASE_URL");
+  storageImplementation = new PostgresStorage();
 } 
 // If neither are available, fall back to in-memory storage
 else {
