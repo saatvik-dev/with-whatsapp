@@ -73,12 +73,24 @@ const Contact = () => {
       const url = '/api/contact';
       console.log("Submitting to:", url);
       
+      // Format the data for the API - ensuring consistent field names for Netlify functions
+      const formattedData = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        kitchenSize: data.kitchenSize, // Keep camelCase for frontend
+        kitchen_size: data.kitchenSize, // Add snake_case for backend compatibility
+        message: data.message
+      };
+      
+      console.log("Formatted data for API:", formattedData);
+      
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formattedData),
       });
       
       console.log("Response status:", response.status);

@@ -11,6 +11,13 @@ async function initializeDatabase() {
       return true;
     }
     
+    // Log all environment variables for debugging (without sensitive values)
+    console.log('Environment variables available:', 
+      Object.keys(process.env)
+        .filter(key => key.includes('SUPABASE') || key.includes('DATABASE'))
+        .map(key => key + '=' + (key.includes('KEY') ? '[REDACTED]' : process.env[key].substring(0,10) + '...'))
+    );
+    
     // Check for environment variables - support both VITE_ prefixed and non-prefixed versions
     // This helps with different Netlify environment variable naming conventions
     const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
@@ -22,7 +29,12 @@ async function initializeDatabase() {
       return false;
     }
 
-    console.log('Initializing Supabase client...');
+    // Mask URL for logging
+    const maskedUrl = supabaseUrl ? 
+      `${supabaseUrl.substring(0, 15)}...${supabaseUrl.substring(supabaseUrl.length - 5)}` : 
+      'undefined';
+    
+    console.log('Initializing Supabase client with URL:', maskedUrl);
     
     // Create Supabase client
     supabase = createClient(supabaseUrl, supabaseKey);
@@ -108,7 +120,18 @@ async function handleContactSubmission(body) {
       };
     }
 
-    const { name, email, phone, message, kitchenSize, budget } = body;
+    // Handle both camelCase and snake_case field names
+    const { 
+      name, 
+      email, 
+      phone, 
+      message, 
+      kitchenSize, kitchen_size, // Accept both formats
+      budget 
+    } = body;
+    
+    // Log all received fields for debugging
+    console.log("Contact form fields received:", JSON.stringify(body));
     
     // Validate required fields
     if (!name || !email || !phone) {
@@ -123,6 +146,9 @@ async function handleContactSubmission(body) {
     
     console.log("Processing contact form submission in Netlify function:", body);
 
+    // Use either kitchenSize or kitchen_size, preferring camelCase (from frontend)
+    const finalKitchenSize = kitchenSize || kitchen_size || null;
+    
     // Create new contact submission using Supabase
     const { data, error } = await supabase
       .from('contact_submissions')
@@ -130,14 +156,15 @@ async function handleContactSubmission(body) {
         name,
         email,
         phone: phone || null,
-        message,
-        kitchen_size: kitchenSize || null,
+        message: message || null,
+        kitchen_size: finalKitchenSize,
         budget: budget || null,
         created_at: new Date().toISOString()
       }])
       .select();
 
     if (error) {
+      console.error("Supabase insert error:", error);
       throw error;
     }
 
@@ -427,13 +454,71 @@ exports.handler = async (event, context) => {
     
     if ((pathMatches('/contact') || pathMatches('/api/contact')) && method === 'POST') {
       console.log('Processing contact form submission');
-      const body = JSON.parse(event.body || '{}');
-      response = await handleContactSubmission(body);
+      try {
+        // Safely parse the body
+        let body;
+        try {
+          body = JSON.parse(event.body || '{}');
+          console.log('Parsed contact form body:', JSON.stringify(body));
+        } catch (parseError) {
+          console.error('Error parsing contact form body:', parseError);
+          return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({
+              success: false,
+              message: 'Invalid JSON in request body',
+              error: parseError.message
+            })
+          };
+        }
+        
+        response = await handleContactSubmission(body);
+      } catch (err) {
+        console.error('Unhandled error in contact submission:', err);
+        response = {
+          statusCode: 500,
+          body: JSON.stringify({
+            success: false,
+            message: 'Internal server error processing contact form',
+            error: err.message
+          })
+        };
+      }
     } 
     else if ((pathMatches('/subscribe') || pathMatches('/api/subscribe')) && method === 'POST') {
       console.log('Processing newsletter subscription');
-      const body = JSON.parse(event.body || '{}');
-      response = await handleNewsletterSubscription(body);
+      try {
+        // Safely parse the body
+        let body;
+        try {
+          body = JSON.parse(event.body || '{}');
+          console.log('Parsed newsletter body:', JSON.stringify(body));
+        } catch (parseError) {
+          console.error('Error parsing newsletter body:', parseError);
+          return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({
+              success: false,
+              message: 'Invalid JSON in request body',
+              error: parseError.message
+            })
+          };
+        }
+        
+        response = await handleNewsletterSubscription(body);
+      } catch (err) {
+        console.error('Unhandled error in newsletter subscription:', err);
+        response = {
+          statusCode: 500,
+          body: JSON.stringify({
+            success: false,
+            message: 'Internal server error processing newsletter',
+            error: err.message
+          })
+        };
+      }
     }
     else if ((pathMatches('/admin/contacts') || pathMatches('/api/admin/contacts')) && method === 'GET') {
       console.log('Getting all contacts');
