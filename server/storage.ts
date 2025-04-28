@@ -1,3 +1,4 @@
+import * as schema from "@shared/schema";
 import { 
   users, type User, type InsertUser,
   contactSubmissions, type Contact, type InsertContact,
@@ -119,7 +120,7 @@ export class MemStorage implements IStorage {
 // PostgreSQL storage implementation using Neon database
 export class PostgresStorage implements IStorage {
   // Helper method to get the db instance - just returns the imported db
-  private async getDb(): Promise<NeonDatabase<typeof schema>> {
+  private async getDb() {
     if (!db) {
       throw new Error('Database connection not initialized');
     }
@@ -235,41 +236,26 @@ export class PostgresStorage implements IStorage {
 }
 
 // Choose which storage implementation to use
-// Check both Supabase credentials and DATABASE_URL
+// Check DATABASE_URL first, then Supabase credentials
 let storageImplementation: IStorage;
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+const databaseUrl = process.env.DATABASE_URL;
 
-// Function to detect if values might be swapped
-const mightBeSwapped = () => {
-  return (
-    supabaseUrl && 
-    supabaseKey && 
-    supabaseUrl.startsWith('ey') && 
-    supabaseKey.startsWith('http')
-  );
-};
-
-// Function to check if we have valid credentials (even if swapped)
-const hasValidCredentials = () => {
-  // If credentials are present but swapped
-  if (mightBeSwapped()) {
-    return true;
-  }
-  
-  // Normal valid credentials check
-  return (
-    (supabaseUrl && supabaseKey && supabaseUrl.startsWith('http') && supabaseKey.startsWith('ey'))
-  );
-};
-
-// Determine which storage implementation to use
-if (hasValidCredentials()) {
+// First check if we have a PostgreSQL connection available
+if (databaseUrl) {
+  console.log("Using PostgreSQL storage implementation with DATABASE_URL");
+  storageImplementation = new PostgresStorage();
+}
+// If no PostgreSQL, check if we have Supabase credentials
+else if (supabaseUrl && supabaseKey) {
   console.log("Using Supabase storage implementation");
   storageImplementation = new SupabaseStorage();
-} else {
-  console.log("Using in-memory storage implementation");
+} 
+// If neither are available, fall back to in-memory storage
+else {
+  console.log("No database configuration found. Using in-memory storage implementation");
   storageImplementation = new MemStorage();
 }
 
