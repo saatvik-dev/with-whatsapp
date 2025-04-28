@@ -17,11 +17,11 @@ const Warranty = () => {
               key={item.id}
               className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-xl p-8 text-center hover:bg-opacity-15 transition-all duration-300"
             >
-              <div className="w-16 h-16 mx-auto bg-green-600 bg-opacity-30 rounded-full flex items-center justify-center mb-6">
+              <div className="w-16 h-16 mx-auto bg-amber-600 bg-opacity-30 rounded-full flex items-center justify-center mb-6">
                 {item.icon === 'infinity' ? (
-                  <IconInfinity className="text-2xl text-green-100" />
+                  <IconInfinity className="text-2xl text-amber-100" />
                 ) : (
-                  <span className="font-['Montserrat'] font-bold text-2xl text-green-100">{item.year}</span>
+                  <span className="font-['Montserrat'] font-bold text-2xl text-amber-100">{item.year}</span>
                 )}
               </div>
               <h3 className="font-['Montserrat'] font-bold text-xl mb-3">{item.title}</h3>
@@ -33,7 +33,7 @@ const Warranty = () => {
         </div>
         
         <div className="mt-16 text-center">
-          <a href="#contact" className="inline-flex items-center px-8 py-4 bg-white text-green-800 rounded-lg font-bold hover:bg-green-100 transition-colors shadow-lg">
+          <a href="#contact" className="inline-flex items-center px-8 py-4 bg-white text-amber-800 rounded-lg font-bold hover:bg-amber-50 transition-colors shadow-lg">
             Get Your Lifetime Kitchen Today
             <IconArrowRight className="ml-2" />
           </a>

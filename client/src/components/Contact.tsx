@@ -14,11 +14,11 @@ import { IconMapPin, IconPhone, IconMail, IconFacebook, IconTwitter, IconInstagr
 const getContactIcon = (iconName: string) => {
   switch (iconName) {
     case 'location':
-      return <IconMapPin className="text-blue-600" />;
+      return <IconMapPin className="text-amber-600" />;
     case 'phone':
-      return <IconPhone className="text-blue-600" />;
+      return <IconPhone className="text-amber-600" />;
     case 'email':
-      return <IconMail className="text-blue-600" />;
+      return <IconMail className="text-amber-600" />;
     default:
       return null;
   }
@@ -124,7 +124,7 @@ const Contact = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row gap-16">
           <div className="w-full lg:w-1/2">
-            <span className="text-blue-600 font-medium">GET IN TOUCH</span>
+            <span className="text-amber-600 font-medium">GET IN TOUCH</span>
             <h2 className="text-3xl md:text-4xl font-['Montserrat'] font-bold mt-2 mb-6">Transform Your Kitchen Today</h2>
             
             <p className="text-slate-600 leading-relaxed mb-8">
@@ -134,7 +134,7 @@ const Contact = () => {
             <div className="space-y-6 mb-8">
               {contactInfo.map(info => (
                 <div key={info.id} className="flex items-start">
-                  <div className="mt-1 bg-blue-100 rounded-full p-2 mr-4">
+                  <div className="mt-1 bg-amber-100 rounded-full p-2 mr-4">
                     {getContactIcon(info.icon)}
                   </div>
                   <div>
@@ -150,7 +150,7 @@ const Contact = () => {
                 <a 
                   key={index}
                   href={link.href} 
-                  className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-blue-100 hover:text-blue-600 transition-colors"
+                  className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-amber-100 hover:text-amber-600 transition-colors"
                   aria-label={`Follow us on ${link.icon}`}
                 >
                   {getSocialIcon(link.icon)}
@@ -175,7 +175,7 @@ const Contact = () => {
                           <FormControl>
                             <Input 
                               placeholder="Your Name" 
-                              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-100"
                               {...field} 
                             />
                           </FormControl>
@@ -194,7 +194,7 @@ const Contact = () => {
                             <Input 
                               placeholder="your@email.com" 
                               type="email"
-                              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-100"
                               {...field} 
                             />
                           </FormControl>
