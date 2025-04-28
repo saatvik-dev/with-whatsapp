@@ -99,12 +99,15 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
-            <div className="flex items-center space-x-2 mb-6">
-              <img src={logoImg} alt="M-Kite Logo" className="h-10 w-auto" />
-              <h1 className="text-2xl font-['Montserrat'] font-bold tracking-tight">
-                <span className="text-white">M-Kite</span>
-                <span className="text-amber-400">Kitchen</span>
-              </h1>
+            <div className="flex items-start space-x-2 mb-6">
+              <img src={logoImg} alt="M-Kite Logo" className="h-12 w-auto" />
+              <div className="flex flex-col">
+                <h1 className="text-2xl font-['Montserrat'] font-bold tracking-tight">
+                  <span className="text-white">M-Kite</span>
+                  <span className="text-amber-400">Kitchen</span>
+                </h1>
+                <span className="text-xs text-amber-400 font-medium mt-0.5">Aluminum Premium Modular Kitchen Cabinets</span>
+              </div>
             </div>
             
             <p className="text-slate-300 mb-6">

@@ -35,12 +35,15 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <a href="#" className="flex items-center space-x-2">
-          <img src={logoImg} alt="M-Kite Logo" className="h-10 w-auto" />
-          <h1 className="text-2xl font-['Montserrat'] font-bold tracking-tight">
-            <span className="text-slate-800">M-Kite</span>
-            <span className="text-amber-600"> Kitchen</span>
-          </h1>
+        <a href="#" className="flex items-start space-x-2">
+          <img src={logoImg} alt="M-Kite Logo" className="h-12 w-auto" />
+          <div className="flex flex-col">
+            <h1 className="text-2xl font-['Montserrat'] font-bold tracking-tight">
+              <span className="text-slate-800">M-Kite</span>
+              <span className="text-amber-600"> Kitchen</span>
+            </h1>
+            <span className="text-xs text-amber-600 font-medium mt-0.5">Aluminum Premium Modular Kitchen Cabinets</span>
+          </div>
         </a>
         
         {/* Desktop Navigation */}
