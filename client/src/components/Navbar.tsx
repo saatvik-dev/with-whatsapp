@@ -35,16 +35,16 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <a href="#" className="flex items-center space-x-3 md:space-x-4">
+        <a href="#" className="flex items-center justify-center space-x-3 md:space-x-4">
           {/* Responsive logo size */}
           <img 
             src={logoImg} 
             alt="M-Kite Logo" 
             className="h-[70px] sm:h-[75px] md:h-[85px] lg:h-[95px] w-auto transition-all" 
           />
-          <div className="flex flex-col">
+          <div className="flex flex-col items-center">
             {/* Responsive font sizes */}
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-[32px] font-['Montserrat'] font-bold tracking-tight whitespace-nowrap">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-[32px] font-['Montserrat'] font-bold tracking-tight whitespace-nowrap text-center">
               <span className="text-slate-800">M-Kite</span>
               <span className="text-amber-600"> Kitchen</span>
             </h1>
