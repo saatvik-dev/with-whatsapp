@@ -8,6 +8,7 @@ import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import Admin from "@/pages/Admin";
 import AdminLogin from "@/pages/AdminLogin";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 function Router() {
   return (
@@ -25,6 +26,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router />
+      <WhatsAppButton />
       <Toaster />
     </QueryClientProvider>
   );
