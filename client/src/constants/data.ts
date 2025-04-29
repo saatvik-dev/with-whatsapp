@@ -206,7 +206,7 @@ export const contactInfo = [
     id: 1,
     icon: 'location',
     title: 'Visit Our Showroom',
-    text: 'HINCH, Hafeezpet, Gopalnagar, Hyderabad, Telangana - 500072
+    text: 'HINCH, Hafeezpet, Gopalnagar, Hyderabad, Telangana - 500072'
 
 '
   },
