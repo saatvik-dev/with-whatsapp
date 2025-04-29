@@ -107,10 +107,10 @@ const Footer = () => {
               <img 
                 src={logoImg} 
                 alt="M-Kite Logo" 
-                className="h-[80px] sm:h-[85px] md:h-[90px] lg:h-[100px] w-auto transition-all" 
+                className="h-[80px] sm:h-[85px] md:h-[85px] lg:h-[80px] w-auto transition-all" 
               />
               <div className="flex flex-col">
-                <h1 className="text-2xl sm:text-2xl md:text-3xl lg:text-[32px] font-['Montserrat'] font-bold tracking-tight whitespace-nowrap text-center sm:text-left">
+                <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-[28px] font-['Montserrat'] font-bold tracking-tight whitespace-nowrap text-center sm:text-left">
                   <span className="text-white">M-Kite</span>
                   <span className="text-amber-400"> Kitchen</span>
                 </h1>
