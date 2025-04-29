@@ -8,8 +8,8 @@ export const WhatsAppButton = () => {
   // Get phone number from contact info
   const phoneContact = contactInfo.find(item => item.icon === 'phone');
   // Clean up the phone number - remove spaces and non-numeric characters except +
-  const phoneNumber = phoneContact ? phoneContact.text.replace(/\s+/g, '').replace(/[^\d+]/g, '') : "+919876543210";
-  const message = "Hello! I'm interested in M-Kite Kitchen products.";
+  const phoneNumber = phoneContact ? phoneContact.text.replace(/\s+/g, '').replace(/[^\d+]/g, '') : "+919948148890";
+  const message = "Hello! I'm interested in M-Kite Kitchen.";
   
   // WhatsApp URL with pre-filled message
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
