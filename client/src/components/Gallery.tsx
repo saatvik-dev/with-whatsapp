@@ -24,7 +24,7 @@ const Gallery = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-8 group-hover:translate-y-0 transition-transform duration-300">
-                <h3 className="font-['Montserrat'] font-bold text-xl mb-2">{item.title}</h3>
+                <h3 className="font-['Montserrat'] font-bold text-xl mb-2 text-amber-400">{item.title}</h3>
                 <p className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">{item.description}</p>
               </div>
             </div>
