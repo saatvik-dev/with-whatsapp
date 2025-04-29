@@ -31,24 +31,24 @@ const Navbar = () => {
   return (
     <header 
       className={`fixed w-full bg-white bg-opacity-95 z-50 transition-all duration-300 ${
-        scrolled ? 'py-2 md:py-3 shadow-md' : 'py-3 md:py-4 shadow-sm'
+        scrolled ? 'py-1 md:py-2 shadow-md' : 'py-1.5 md:py-2 shadow-sm'
       }`}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <a href="#" className="flex items-center justify-center space-x-3 md:space-x-4">
+        <a href="#" className="flex items-center justify-center space-x-2 md:space-x-3">
           {/* Responsive logo size */}
           <img 
             src={logoImg} 
             alt="M-Kite Logo" 
-            className="h-[70px] sm:h-[75px] md:h-[85px] lg:h-[95px] w-auto transition-all" 
+            className="h-[60px] sm:h-[65px] md:h-[70px] lg:h-[75px] w-auto transition-all" 
           />
           <div className="flex flex-col items-center">
             {/* Responsive font sizes */}
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-[32px] font-['Montserrat'] font-bold tracking-tight whitespace-nowrap text-center">
+            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-[28px] font-['Montserrat'] font-bold tracking-tight whitespace-nowrap text-center">
               <span className="text-slate-800">M-Kite</span>
               <span className="text-amber-600"> Kitchen</span>
             </h1>
-            <span className="text-[9px] sm:text-[10px] md:text-[11px] text-amber-600 font-medium mt-0.5 leading-tight text-center w-full">
+            <span className="text-[8px] sm:text-[9px] md:text-[10px] text-amber-600 font-medium mt-0.5 leading-tight text-center w-full">
               Aluminum Premium Modular Kitchen Cabinets
             </span>
           </div>
