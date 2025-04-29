@@ -22,10 +22,12 @@ const Gallery = () => {
                 alt={item.title} 
                 className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-slate-900/80 to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-300"></div>
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-8 group-hover:translate-y-0 transition-transform duration-300">
-                <h3 className="font-['Montserrat'] font-bold text-xl mb-2 text-amber-400">{item.title}</h3>
-                <p className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">{item.description}</p>
+                <h3 className="font-['Montserrat'] font-bold text-xl mb-2 text-amber-400 text-center text-shadow-sm shadow-black"
+                style={{ textShadow: '1px 1px 2px black, 0 0 1em black, 0 0 0.2em black' }}>{item.title}</h3>
+                <p className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 text-center"
+                style={{ textShadow: '0 0 5px black' }}>{item.description}</p>
               </div>
             </div>
           ))}
