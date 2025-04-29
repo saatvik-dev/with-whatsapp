@@ -12,7 +12,7 @@ export const WhatsAppButton = () => {
   const message = "Hello! I'm interested in M-Kite Kitchen.";
   
   // WhatsApp URL with pre-filled message
-  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  const whatsappUrl = `https://wa.me/${+919948148890}?text=${encodeURIComponent(message)}`;
 
   // Show button after scrolling a bit
   useEffect(() => {
