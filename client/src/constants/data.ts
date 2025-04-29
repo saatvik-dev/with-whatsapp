@@ -252,11 +252,7 @@ export const socialLinks = [
   { href: "#", icon: "facebook" },
   { href: "#", icon: "instagram" },
   { href: "#", icon: "twitter" },
-  { href: "#", icon: "linkedin" },
-  { 
-    href: "https://wa.me/919876543210?text=Hello%20M-Kite%20Kitchen%2C%20I%27m%20interested%20in%20your%20aluminum%20modular%20kitchen%20products.%20Could%20you%20please%20provide%20more%20information%3F", 
-    icon: "whatsapp" 
-  }
+  { href: "#", icon: "linkedin" }
 ];
 
 export const footerLinks = [
