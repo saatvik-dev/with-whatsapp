@@ -156,9 +156,7 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="flex items-start">
                 <IconMapPin className="text-amber-400 mt-1 mr-3" />
-                <span className="text-slate-300">HINCH, Hafeezpet, Gopalnagar, Hyderabad, Telangana - 500072
-
-</span>
+                <span className="text-slate-300">HINCH, Hafeezpet, Gopalnagar, Hyderabad, Telangana - 500072</span>
               </li>
               <li className="flex items-center">
                 <IconPhone className="text-amber-400 mr-3" />
