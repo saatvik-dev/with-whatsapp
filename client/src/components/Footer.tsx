@@ -5,7 +5,7 @@ import { quickLinks, socialLinks, footerLinks } from '@/constants/data';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'wouter';
-import { IconFacebook, IconTwitter, IconInstagram, IconLinkedin } from '@/lib/icons';
+import { IconFacebook, IconTwitter, IconInstagram, IconLinkedin, IconWhatsApp } from '@/lib/icons';
 import logoImg from '../assets/m-kitelogo.png';
 
 const getSocialIcon = (iconName: string) => {
@@ -18,6 +18,8 @@ const getSocialIcon = (iconName: string) => {
       return <IconInstagram />;
     case 'linkedin':
       return <IconLinkedin />;
+    case 'whatsapp':
+      return <IconWhatsApp className="text-green-500" />;
     default:
       return null;
   }
@@ -129,8 +131,13 @@ const Footer = () => {
                 <a 
                   key={index}
                   href={link.href} 
-                  className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:bg-amber-600 hover:text-white transition-colors"
-                  aria-label={`Follow us on ${link.icon}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors
+                    ${link.icon === 'whatsapp' 
+                      ? 'bg-green-600 text-white hover:bg-green-700' 
+                      : 'bg-slate-800 text-slate-300 hover:bg-amber-600 hover:text-white'}`}
+                  aria-label={`${link.icon === 'whatsapp' ? 'Chat with us on' : 'Follow us on'} ${link.icon}`}
                 >
                   {getSocialIcon(link.icon)}
                 </a>

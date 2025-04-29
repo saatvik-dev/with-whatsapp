@@ -29,6 +29,7 @@ import {
   Menu,
   X as XIcon
 } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 
 // Create wrapper components to match the styling from Font Awesome
 export const IconCheck = (props: any) => <CheckCircle2 size={props.size || 20} {...props} />;
@@ -62,3 +63,4 @@ export const IconSend = (props: any) => <Send size={props.size || 20} {...props}
 export const IconSuccess = (props: any) => <Check className="text-teal-600" size={props.size || 20} {...props} />;
 export const IconFail = (props: any) => <X className="text-red-500" size={props.size || 20} {...props} />;
 export const IconWarning = (props: any) => <AlertTriangle className="text-yellow-500" size={props.size || 20} {...props} />;
+export const IconWhatsApp = (props: any) => <FaWhatsapp size={props.size || 20} {...props} />;
