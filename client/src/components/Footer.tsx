@@ -156,19 +156,21 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="flex items-start">
                 <IconMapPin className="text-amber-400 mt-1 mr-3" />
-                <span className="text-slate-300">123 Innovation Street, Design District, Mumbai, India - 400001</span>
+                <span className="text-slate-300">HINCH, Hafeezpet, Gopalnagar, Hyderabad, Telangana - 500072
+
+</span>
               </li>
               <li className="flex items-center">
                 <IconPhone className="text-amber-400 mr-3" />
-                <span className="text-slate-300">+91 98765 43210</span>
+                <span className="text-slate-300">+91 9515133774</span>
               </li>
               <li className="flex items-center">
                 <IconMail className="text-amber-400 mr-3" />
-                <span className="text-slate-300">info@mkitekitchen.com</span>
+                <span className="text-slate-300">18squarehd@gmail.com</span>
               </li>
               <li className="flex items-center">
                 <IconClock className="text-amber-400 mr-3" />
-                <span className="text-slate-300">Mon-Sat: 10:00 AM - 7:00 PM</span>
+                <span className="text-slate-300">Mon-Sat: 10:00 AM - 9:00 PM</span>
               </li>
             </ul>
           </div>

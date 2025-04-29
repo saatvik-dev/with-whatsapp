@@ -99,13 +99,13 @@ export const galleryItems = [
   },
   {
     id: 5,
-    image: 'https://images.unsplash.com/photo-1556912173-3bb406ef7e8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
+    image: 'https://ik.imagekit.io/4ep9dg1krg/niloy-tanvirul-M0PnEFVfq-g-unsplash%20(1).jpg?updatedAt=1745521359770',
     title: 'Industrial Chic',
     description: 'Raw aluminum aesthetics meet sophisticated functionality.'
   },
   {
     id: 6,
-    image: 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
+    image: 'https://ik.imagekit.io/4ep9dg1krg/pexels-falling4utah-2724748.jpg?updatedAt=1745521275097',
     title: 'Open Concept',
     description: 'Seamless integration with living spaces using durable aluminum framing.'
   }
@@ -160,23 +160,23 @@ export const testimonials = [
   {
     id: 1,
     text: 'After years of dealing with warped cabinets and termite problems, switching to M-Kite was life-changing. It\'s been two years and my kitchen looks as perfect as the day it was installed.',
-    name: 'Sarah Johnson',
-    location: 'Mumbai',
-    avatar: 'https://randomuser.me/api/portraits/women/45.jpg'
+    name: 'Dr.Nakta Raju (USA)',
+    location: 'Hyderabad',
+    avatar: 'https://ik.imagekit.io/4ep9dg1krg/image.png?updatedAt=1745838365006'
   },
   {
     id: 2,
     text: 'The lifetime guarantee actually means something with M-Kite. I was skeptical at first, but the quality is undeniable. Their installation team was professional and the kitchen is stunning.',
     name: 'Rajesh Patel',
     location: 'Delhi',
-    avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
+    avatar: 'https://ik.imagekit.io/4ep9dg1krg/indian%20man%20aged%2030.jpg?updatedAt=1745521214983'
   },
   {
     id: 3,
     text: 'Living in a coastal area, humidity was always a problem for our kitchen. With M-Kite\'s aluminum cabinets, we finally have a kitchen that doesn\'t show signs of wear from the moisture.',
     name: 'Priya Sharma',
     location: 'Chennai',
-    avatar: 'https://randomuser.me/api/portraits/women/68.jpg'
+    avatar: 'https://ik.imagekit.io/4ep9dg1krg/indian.png?updatedAt=1745520949677'
   }
 ];
 
@@ -206,19 +206,21 @@ export const contactInfo = [
     id: 1,
     icon: 'location',
     title: 'Visit Our Showroom',
-    text: '123 Innovation Street, Design District, Mumbai, India - 400001'
+    text: 'HINCH, Hafeezpet, Gopalnagar, Hyderabad, Telangana - 500072
+
+'
   },
   {
     id: 2,
     icon: 'phone',
     title: 'Call Us',
-    text: '+91 98765 43210'
+    text: '+91 9515133774'
   },
   {
     id: 3,
     icon: 'email',
     title: 'Email Us',
-    text: 'info@mkitekitchen.com'
+    text: '18squarehd@gmail.com'
   }
 ];
 
