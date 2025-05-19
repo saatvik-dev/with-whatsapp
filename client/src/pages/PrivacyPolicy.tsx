@@ -88,9 +88,9 @@ const PrivacyPolicy = () => {
             If you have any questions about this Privacy Policy, please contact us at:
           </p>
           <p>
-            Email: privacy@mkitekitchen.com<br />
-            Address: M-Kite Kitchen, 123 Aluminum Avenue, Delhi, India 110001<br />
-            Phone: +91 123 456 7890
+            Email: 18squarehd@gmail.com<br />
+            Address:HINCH, Hafeezpet, Gopalnagar, Hyderabad, Telangana - 500072<br />
+            Phone: +91 9515133774
           </p>
         </div>
       </div>
